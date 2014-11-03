@@ -176,10 +176,10 @@ function findClickedField(mouseX, mouseY) {
  	
  	switch (symbol) {
  		case "X":
-			drawX(xColor, xLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
+			drawX(canvasContext, xColor, xLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
  			break;
  		case "O":	
- 			drawO(oColor, oLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
+ 			drawO(canvasContext, oColor, oLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
  			break;
  		default:
  			//do nothing
@@ -323,7 +323,7 @@ function drawWinMarkers() {
 			switch (getWinningSymbolOfSubfieldID(i)) {
 				case "X":
 					drawX(
-
+						canvasContext, 
 						bigXColor, 
 						bigXLineWidth, 
 						symbolGeometry.top, 
@@ -335,7 +335,6 @@ function drawWinMarkers() {
 				case "XO":
 					drawX(
 						canvasContext,
-
 						bigXColor, 
 						bigXLineWidth, 
 						symbolGeometry.top, 
@@ -346,9 +345,7 @@ function drawWinMarkers() {
 					//suppresswarning: break needed or smth
 				case "O":
 					drawO(
-
 						canvasContext,
-
 						bigOColor, 
 						bigOLineWidth, 
 						symbolGeometry.top, 
@@ -419,13 +416,15 @@ function selectRandomPlayer(){
 }
 
 function drawSecondaryDisplay() {
+	secondaryDisplayContext.fillStyle="lightgray";
+	secondaryDisplayContext.fillRect(0, 0, secondaryDisplayElement.width, secondaryDisplayElement.height);
+	
 	var symbolGeometry = {
 		left:0,
 		top:0,
 		width:Math.floor(secondaryDisplayElement.width / 2),
 		height:secondaryDisplayElement.height
 	};
-
 	
 	switch(currentPlayerSymbol) {
 		case "X":
@@ -434,6 +433,8 @@ function drawSecondaryDisplay() {
 		default:
 			drawO(secondaryDisplayContext, bigOColor, bigOLineWidth, symbolGeometry.top, symbolGeometry.left, symbolGeometry.width, symbolGeometry.height);
 
+	secondaryDisplayContext.font = "30px Arial";
+	secondaryDisplayContext.fillText("XX:XX", symbolGeometry.width, 50);
 	}
 }
 function drawGameArea() {
@@ -730,8 +731,9 @@ function test() {
 	//canvasContext.putImageData(Filters.getBlurryImage(173, 173, 153, 153, 5), 173, 173);
 	//blurArea({left: 173, top: 173, width: 153, height: 153});
 	//grayscaleArea(100,100,200,200);
+	init();
 	field = [
-		["X","O","X","O"," ","O","O","X"," "], //unentschieden
+		["X","O","X","O"," ","O","O","X"," "], //kann zu unentschieden und zu O werden
 		["O","O","O"," "," "," "," "," "," "], 
 		["O","O","O"," "," "," "," "," "," "], 
 		
@@ -740,9 +742,10 @@ function test() {
 		["X","X","X"," "," "," "," "," "," "],
 		
 		["X","X","X"," "," "," "," "," "," "],
-		["O","O","O"," "," "," "," "," "," "],
+		["X","X","X"," "," "," "," "," "," "],
 		["O","O","O"," "," "," "," "," "," "],
 	];
+	
 	drawGameArea();
 	drawSecondaryDisplay();
 }
