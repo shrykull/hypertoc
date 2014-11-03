@@ -1,5 +1,5 @@
 var canvasElement, canvasContext;
-	var secondaryDisplayElement, secondaryDisplayContext;
+var secondaryDisplayElement, secondaryDisplayContext;
 
 //Layout
 var subfieldBorderRelative = 0.02,
@@ -13,11 +13,19 @@ var subfieldBorderRelative = 0.02,
     bigOColor = 'darkgreen',
     oColor = 'green',
     bigOLineWidth = 14,
-    oLineWidth = 2;
-
+    oLineWidth = 2,
+    startButtonText = "S T A R T";
 
 var subfield, subfieldGeometry, clickableSubfieldRects, field,
-	currentPlayerSymbol,turnNumber;
+	currentPlayerSymbol,turnNumber, timerString;
+
+var moveTimer, gamemode;
+
+var Rulesets = [
+	{
+		timeToFinishMove : 45
+	}
+];
 
 init();
 
@@ -320,7 +328,7 @@ function drawWinMarkers() {
 			 * - Einmal geblurtes zeug cachen und nicht neu berechnen sondern einfach nur aus cache redraw
 			*/
 			//blurArea(symbolGeometry); 
-			switch (getWinningSymbolOfSubfieldID(i)) {
+			switch (getWinningSymbolFromCount(getWinningSymbolCountsOfSubfieldID(i))) {
 				case "X":
 					drawX(
 						canvasContext, 
@@ -332,17 +340,6 @@ function drawWinMarkers() {
 						symbolGeometry.height
 					);
 					break;
-				case "XO":
-					drawX(
-						canvasContext,
-						bigXColor, 
-						bigXLineWidth, 
-						symbolGeometry.top, 
-						symbolGeometry.left, 
-						symbolGeometry.width, 
-						symbolGeometry.height
-					);
-					//suppresswarning: break needed or smth
 				case "O":
 					drawO(
 						canvasContext,
@@ -353,7 +350,28 @@ function drawWinMarkers() {
 						symbolGeometry.width, 
 						symbolGeometry.height
 					);
-					
+					break;
+				case " ":
+					if (subfieldIsDone(i)) {
+						drawX(
+							canvasContext,
+							bigXColor, 
+							bigXLineWidth, 
+							symbolGeometry.top, 
+							symbolGeometry.left, 
+							symbolGeometry.width, 
+							symbolGeometry.height
+						);
+						drawO(
+							canvasContext,
+							bigOColor, 
+							bigOLineWidth, 
+							symbolGeometry.top, 
+							symbolGeometry.left, 
+							symbolGeometry.width, 
+							symbolGeometry.height
+						);
+					}
 					
 				default:
 					//do nothing
@@ -385,6 +403,7 @@ function drawEndBanner(winner){
     		//TODO: Achievement unlocked: CRIPPLE FIGHT!
     		canvasContext.fillText("Draw!",0,canvasElement.height/1.5);
     	} 
+    	
     }
 	
 	canvasContext.rotate(20*Math.PI /180);
@@ -405,7 +424,10 @@ function prepareGameModel() {
 	currentPlayerSymbol = selectRandomPlayer();
 	calculateSubfieldGeometry();
 	clearField();
-    clickableSubfieldRects = getSubfieldRects().rects; //make everything clickable
+    clickableSubfieldRects = []; //make nothing clickable until start
+    	
+	moveTimer = -1;
+	gamemode = 0;
 }
 
 //selects a random player (used at the start of the game)
@@ -419,22 +441,49 @@ function drawSecondaryDisplay() {
 	secondaryDisplayContext.fillStyle="lightgray";
 	secondaryDisplayContext.fillRect(0, 0, secondaryDisplayElement.width, secondaryDisplayElement.height);
 	
-	var symbolGeometry = {
+	var leftHalfGeometry = {
 		left:0,
 		top:0,
 		width:Math.floor(secondaryDisplayElement.width / 2),
 		height:secondaryDisplayElement.height
-	};
+	},
+	rightHalfGeometry = {
+		left:Math.floor(secondaryDisplayElement.width / 2),
+		top:0,
+		width:Math.floor(secondaryDisplayElement.width / 2),
+		height:Math.floor(secondaryDisplayElement.width / 2)
+	}
 	
 	switch(currentPlayerSymbol) {
 		case "X":
-			drawX(secondaryDisplayContext, bigXColor, bigXLineWidth, symbolGeometry.top, symbolGeometry.left, symbolGeometry.width, symbolGeometry.height);
+			drawX(secondaryDisplayContext, bigXColor, bigXLineWidth, 
+				leftHalfGeometry.top, leftHalfGeometry.left, leftHalfGeometry.width, leftHalfGeometry.height);
 			break;
 		default:
-			drawO(secondaryDisplayContext, bigOColor, bigOLineWidth, symbolGeometry.top, symbolGeometry.left, symbolGeometry.width, symbolGeometry.height);
-
-	secondaryDisplayContext.font = "30px Arial";
-	secondaryDisplayContext.fillText("XX:XX", symbolGeometry.width, 50);
+			drawO(secondaryDisplayContext, bigOColor, bigOLineWidth,
+				leftHalfGeometry.top, leftHalfGeometry.left, leftHalfGeometry.width, leftHalfGeometry.height);
+	}
+	
+	if (moveTimer < 0) {
+		//draw "start button"
+		secondaryDisplayContext.fillStyle=markedColor;
+		secondaryDisplayContext.fillRect(rightHalfGeometry.left, rightHalfGeometry.top, 
+										rightHalfGeometry.width, rightHalfGeometry.height);
+										
+										
+		secondaryDisplayContext.fillStyle=bigOColor;
+		secondaryDisplayContext.font = "30px Arial";
+		var textwidth = secondaryDisplayContext.measureText(startButtonText).width;
+		secondaryDisplayContext.fillText(startButtonText,
+					(rightHalfGeometry.width - textwidth) / 2 + rightHalfGeometry.left, 
+					(rightHalfGeometry.height + 30)/ 2
+				);
+	} else {
+		//draw remaining time
+		timerString = Math.floor(moveTimer / 60) + ":" + (moveTimer % 60);
+		secondaryDisplayContext.font = "60px Arial";
+		secondaryDisplayContext.fillStyle="black";
+		secondaryDisplayContext.fillText(timerString, leftHalfGeometry.width, 60);
 	}
 }
 function drawGameArea() {
@@ -495,40 +544,44 @@ function clearField() {
 
 //returns true if no moves are possible on that subfield anymore
 function subfieldIsDone(subfieldID) {
-	return getWinningSymbolOfSubfieldID(subfieldID) !== " ";
+	var counts = getWinningSymbolCountsOfSubfieldID(subfieldID);
+	//is done if somebody has won or its full.
+	return ((counts.O != counts.X) || (field[subfieldID].indexOf(" ") == -1));
 }
 
 //returns "X", "O", " " if x, o or nobody won yet. returns "XO" on a draw.
-function getWinningSymbolOfSubfieldID(fieldID) {
+function getWinningSymbolCountsOfSubfieldID(fieldID) {
 	var subfieldValues = field[fieldID];
-	return getWinningSymbolOfSubFieldValues(subfieldValues);
+	return getWinningSymbolCountsOfSubFieldValues(subfieldValues);
 }
 
-function getWinningSymbolOfSubFieldValues(subfieldValues) {
+//counts winning triplets for X and O in an object. does not accept XO.
+function getWinningSymbolCountsOfSubFieldValues(subfieldValues) {
+	var winCount = {
+		X:0, 
+		O:0,
+	};
+	
 	//horizontal
 	for (var i = 0; i < subfieldValues.length; i += 3) {
 		if ((subfieldValues[i] !== " ")
-			&& (subfieldValues[i] !== "XO")
 			&& (subfieldValues[i] == subfieldValues[i+1]) 
 			&& (subfieldValues[i+1] == subfieldValues[i+2])
 		) {
-			return subfieldValues[i];
+			++winCount[subfieldValues[i]];
 		}
 	}
 	//vertical
 	for (var i = 0; i < subfieldValues.length / 3; ++i) {
 		if ((subfieldValues[i] !== " ") 
-			&& (subfieldValues[i] !== "XO")
 			&& (subfieldValues[i] == subfieldValues[i+3])
 			&& (subfieldValues[i+3] == subfieldValues[i+6])
 		) {
-			return subfieldValues[i];
+			++winCount[subfieldValues[i]];
 		}
 	}
 	//diagonal
-	if (
-		(subfieldValues[4] !== " ")
-			&& (subfieldValues[i] !== "XO")
+	if ((subfieldValues[4] !== " ")
 			&& ((subfieldValues[0] == subfieldValues[4])
 			&& (subfieldValues[4] == subfieldValues[8])
 		) || (
@@ -536,54 +589,124 @@ function getWinningSymbolOfSubFieldValues(subfieldValues) {
 			&& (subfieldValues[4] == subfieldValues[6])
 		)
 	) { 
-		return subfieldValues[4];
+		++winCount[subfieldValues[4]];
 	}
-	//draw
-	if (subfieldValues.indexOf(" ") == -1) {
-		return "XO";
+	//none of these applied -> draw 0:0
+
+	return winCount;
+	/*
+	//old behaviour
+	if((winCount.X == 0) && (winCount.O == 0)) {
+		return " "; //nobody won YET
 	}
-	
-	//no result yet
-	return " ";
+	else if ((winCount.X == winCount.O) && (winCount.X !== 0)) {
+		return "XO"; //a 'real' draw.
+	}
+	else if (winCount.X > winCount.O)
+		return "X"; //X won more than O
+	else if (winCount.O > winCount.X)
+		return "O"; //O won more than X
+	*/
+}
+
+function getWinningSymbolFromCount(winCount) {
+	if ((winCount.X == winCount.O) && (winCount.X !== 0)) {
+		return "XO"; //a 'real' draw.
+	}
+	else if (winCount.X > winCount.O)
+		return "X"; //X won more than O
+	else if (winCount.O > winCount.X)
+		return "O"; //O won more than X
+	return " "; //nobody won (YET?)
 }
 
 //checks if some won the game returns "X","O"," " or "XO" for "X" won, "O" won, nobody won, or a draw 
 function getWinner(){
-	//TODO: 
 	var tempFields = [];
-	var actSymbol;
+	var actSymbolCount;
 	var playerSymbols = ["X","O"];
-	var actwinner;
-	var winners = [];
+	var actwinners = {
+		X:0,
+		O:0
+	};
 	for(var p = 0;p<playerSymbols.length;p++){
 			tempFields = [];
 		for(var i = 0;i<field.length;i++){
-		
-			actSymbol = getWinningSymbolOfSubfieldID(i);
-			//to make draw Fields count for both players
-			if(actSymbol == "XO"){
-				tempFields.push(playerSymbols[p]);	
-			} 
-			else {
-				tempFields.push(actSymbol);	
+			actSymbolCount = getWinningSymbolCountsOfSubfieldID(i);
+			if (!subfieldIsDone(i)) {
+				tempFields.push(" "); //its not a draw, theres still stuff to do
+			} else {
+				var winningSymbol = getWinningSymbolFromCount(actSymbolCount);
+				if (winningSymbol == " ") {
+					tempFields.push(playerSymbols[p]); //actual draw, replace draw with currently analyzed symbol
+				}else {
+					tempFields.push(winningSymbol);
+				}
 			}
-	
 		}
-		actwinner = getWinningSymbolOfSubFieldValues(tempFields);	
-		if(actwinner != " " && $.inArray(actwinner, winners)) winners.push(actwinner);
+		var counts = getWinningSymbolCountsOfSubFieldValues(tempFields);
+		actwinners.X += counts.X;
+		actwinners.O += counts.O;
+	}
 	
+	if ((tempFields.indexOf(" ") == -1) && (actwinners.X == actwinners.O))
+		return "XO"; //the draw is real
+	else if (actwinners.X == actwinners.O) 
+		return " "; //there's so much stuff to do
+	else
+		return getWinningSymbolFromCount(actwinners); //return a symbol. meh.
 		
-	}
-	
-	if(winners.length === 1){
-		return winners[0];
-	}
-	
-	return " ";
-	}
-	
+}
 
+function tickMoveTimer() {
+	drawSecondaryDisplay();
+	if (moveTimer > 0) {
+		--moveTimer;
+		window.setTimeout(tickMoveTimer, 1000);
+	} else if (moveTimer == 0) {
+		//timer ran out!
+		switchTurns();
+		//TODO: put this in ruleset
+		//next player has free choice
+		clickableSubfieldRects = getEveryPossibleClickableRect();
+		drawGameArea();
+		drawSecondaryDisplay();
+		tickMoveTimer();
+	}
+	//else: timer is -1, show startbutton, dont tick.
+}
+function handleSecondaryClick(ev) {
+	var mouseX = ev.pageX - secondaryDisplayElement.offsetLeft, mouseY = ev.pageY - secondaryDisplayElement.offsetTop;
+	
+	if ((moveTimer < 0) && (mouseX > secondaryDisplayElement.width / 2)) {
+		//startbutton was clicked
+		
+		//reset Field
+		clearField();
+		
+		//everything may be clickable
+		clickableSubfieldRects = getSubfieldRects().rects; 
+		canvasElement.addEventListener('click', handleClick, false);
+		
+		//draw game
+		drawGameArea();
+		update();
+		
+		//start timer
+		moveTimer = Rulesets[gamemode].timeToFinishMove;
+		tickMoveTimer();
+	}
+}
 
+function getEveryPossibleClickableRect() {
+	var newClickableSubfieldRects = [];
+	for (var i = 0; i < getSubfieldRects().rects.length; ++i) {
+		if (!subfieldIsDone(i)) {
+			newClickableSubfieldRects.push(getSubfieldRects().rects[i]);
+		}
+	}
+	return newClickableSubfieldRects;
+}
 function handleClick(ev) {
     var mouseX = ev.pageX - canvasElement.offsetLeft, mouseY = ev.pageY - canvasElement.offsetTop;
     var newClickableSubfieldRects = 0;
@@ -596,7 +719,6 @@ function handleClick(ev) {
 				//next player
 				switchTurns();   
 				turnNumber ++;
-				
 				
 	            //mark next area
 	            newClickableSubfieldRects = [getSubfieldRects().rects[clickedSubSubFieldID]];
@@ -611,11 +733,7 @@ function handleClick(ev) {
 	    if (subfieldIsDone(newClickableSubfieldRects[0].n)) {
 	    	newClickableSubfieldRects = [];
 	    	//mark every field that's not done yet
-	    	for (var i = 0; i < getSubfieldRects().rects.length; ++i) {
-	    		if (!subfieldIsDone(i)) {
-	    			newClickableSubfieldRects.push(getSubfieldRects().rects[i]);
-	    		}
-	    	}
+			newClickableSubfieldRects = getEveryPossibleClickableRect();
 	    }
 	    
 	    clickableSubfieldRects = newClickableSubfieldRects;
@@ -626,6 +744,7 @@ function handleClick(ev) {
 	    if(winner != " "){
 	    		drawEndBanner(winner);
 	    		canvasElement.removeEventListener("click", handleClick);
+	    		moveTimer = -1;
 	    }
 	    
     }
@@ -635,11 +754,12 @@ function switchTurns() {
 		currentPlayerSymbol = "O";
 	else 
 		currentPlayerSymbol = "X";
+
+	moveTimer = Rulesets[gamemode].timeToFinishMove;
 }
 
 function markClickableSubfields() {
     for (var i = 0; i < clickableSubfieldRects.length; ++i) {
-        //markSubFieldByCoordinate(clickableSubfields[i].x+1, clickableSubfields[i].y+1);
         markSubFieldRect(clickableSubfieldRects[i]);
     }
 }
@@ -652,9 +772,12 @@ function init() {
 	secondaryDisplayContext = secondaryDisplayElement.getContext('2d');
 	
 	canvasElement.addEventListener('click', handleClick, false);
+	secondaryDisplayElement.addEventListener('click', handleSecondaryClick, false);
 	document.getElementById("clickButton").addEventListener('click', init, false);
 	document.getElementById("testButton").addEventListener('click', test, false);
 	turnNumber =0;
+	timerString = "XX:XX";
+	
 	prepareGameModel();
     drawGameArea();
 }
@@ -733,21 +856,24 @@ function test() {
 	//grayscaleArea(100,100,200,200);
 	init();
 	field = [
-		["X","O","X","O"," ","O","O","X"," "], //kann zu unentschieden und zu O werden
-		["O","O","O"," "," "," "," "," "," "], 
-		["O","O","O"," "," "," "," "," "," "], 
+		["X","O","X","O","X","O","O","X","O"],
+		["X","O","X","O","X","O","O","X","O"],
+		["X","O","X","O","X","O"," ","X"," "], 
 		
-		["X","X","X"," "," "," "," "," "," "],
-		["O","O","O"," "," "," "," "," "," "],
-		["X","X","X"," "," "," "," "," "," "],
+		["X","O","X"," "," "," "," "," "," "],
+		["O","X","O"," "," "," "," "," "," "],
+		["X","O","X"," "," "," "," "," "," "],
 		
+		[" ","X","X"," "," "," "," "," "," "],
 		["X","X","X"," "," "," "," "," "," "],
-		["X","X","X"," "," "," "," "," "," "],
-		["O","O","O"," "," "," "," "," "," "],
+		["O"," ","O"," "," "," "," "," "," "],
 	];
 	
+	clickableSubfieldRects = getEveryPossibleClickableRect();
 	drawGameArea();
 	drawSecondaryDisplay();
+	moveTimer = Rulesets[gamemode].timeToFinishMove;
+	tickMoveTimer();
 }
 //Simple imagefilter object
 var Filters = {
