@@ -22,6 +22,12 @@ To get you started, we made a damn small instruction.
 
 5) The winner is the one who wins the TicTacToe on the big fields.
 
+To create a draw use: 
+OXX
+XOO+
+
+OXX
+
 Happy playing!
 The IDE Enforcement team
 
