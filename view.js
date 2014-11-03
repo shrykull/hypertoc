@@ -176,10 +176,10 @@ function findClickedField(mouseX, mouseY) {
  	
  	switch (symbol) {
  		case "X":
-			drawX(canvasContext, xColor, xLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
+			drawX(xColor, xLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
  			break;
  		case "O":	
- 			drawO(canvasContext, oColor, oLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
+ 			drawO(oColor, oLineWidth, subsubfieldTop, subsubfieldLeft, subsubfieldWidth, subsubfieldWidth);
  			break;
  		default:
  			//do nothing
@@ -187,6 +187,7 @@ function findClickedField(mouseX, mouseY) {
  	update();
  }
  
+
  function drawX(context, color, lineWidth, top, left, width, height) {
  	var lineRadius = lineWidth / 2; 
  	
@@ -212,12 +213,14 @@ function findClickedField(mouseX, mouseY) {
 		left + width / 2, 
 		top + height / 2, 
 		(width - lineWidth) / 2, 
+
 		0, 
 		2 * Math.PI, 
 		false
 	);
 	context.stroke();
 	context.closePath();
+
  }
  
 function markSubFieldByCoordinate(mouseX, mouseY) {
@@ -320,7 +323,7 @@ function drawWinMarkers() {
 			switch (getWinningSymbolOfSubfieldID(i)) {
 				case "X":
 					drawX(
-						canvasContext,
+
 						bigXColor, 
 						bigXLineWidth, 
 						symbolGeometry.top, 
@@ -332,6 +335,7 @@ function drawWinMarkers() {
 				case "XO":
 					drawX(
 						canvasContext,
+
 						bigXColor, 
 						bigXLineWidth, 
 						symbolGeometry.top, 
@@ -342,7 +346,9 @@ function drawWinMarkers() {
 					//suppresswarning: break needed or smth
 				case "O":
 					drawO(
+
 						canvasContext,
+
 						bigOColor, 
 						bigOLineWidth, 
 						symbolGeometry.top, 
@@ -419,6 +425,7 @@ function drawSecondaryDisplay() {
 		width:Math.floor(secondaryDisplayElement.width / 2),
 		height:secondaryDisplayElement.height
 	};
+
 	
 	switch(currentPlayerSymbol) {
 		case "X":
@@ -426,6 +433,7 @@ function drawSecondaryDisplay() {
 			break;
 		default:
 			drawO(secondaryDisplayContext, bigOColor, bigOLineWidth, symbolGeometry.top, symbolGeometry.left, symbolGeometry.width, symbolGeometry.height);
+
 	}
 }
 function drawGameArea() {
