@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!-- HTML5 Hello world by kirupa - http://www.kirupa.com/html5/getting_your_feet_wet_html5_pg1.htm -->
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<title>Hello...</title>
+<style type="text/css">
+#mainContent {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: xx-large;
+	font-weight: bold;
+	background-color: #f0f0f0;
+	width:100%;
+	text-align:center;
+}
+#gameView {
+	background-color:#d0d0d0;
+}
+.buttonStyle {
+	border-radius: 4px;
+	border: thin solid #F0E020;
+	padding: 5px;
+	background-color: #F8F094;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	font-weight: bold;
+	color: #663300;
+	width: 500px;
+}
+
+.buttonStyle:hover {
+	border: thin solid #FFCC00;
+	background-color: #FCF9D6;
+	color: #996633;
+	cursor: pointer;
+}
+.buttonStyle:active {
+	border: thin solid #99CC00;
+	background-color: #F5FFD2;
+	color: #669900;
+	cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+<div id="mainContent">
+	<div>
+		<canvas id="gameView" width="500" height="500"></canvas>
+		<canvas id="secondaryDisplay" width="333" height="167"></canvas>
+	</div>
+	<div>
+		<button id="clickButton" class="buttonStyle">click here to reset the game</button>
+		<button id="testButton" class="buttonStyle">click here to test a function</button>
+		<br/>
+		<button id="networkingButton" class="buttonStyle">Click me to test networking stuff</button>
+	</div>
+</div>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="view.js"></script> 
+
+</body>
+</html>
