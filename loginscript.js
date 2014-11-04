@@ -1,27 +1,18 @@
 var centerX,endY;
 $(document).ready(function(){
  centerX = $(window).scrollLeft() + $(window).width() / 2 - ($("#pleaseWaitBox").width()/2);
- endY = $(window).scrollTop() + $(window).height() / 4;
+ endY = $(window).scrollTop() + $(window).height() / 5;
+ $("#pleaseWaitBox").offset({top: $(window).scrollTop() + $(window).height(),left: centerX});
 });
 
 
 function login(){
 
-    $("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(700);
+    $("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(200);
     slideWaitingBoxUp( $(window).scrollTop() + $(window).height());
+    $("#loginAnonymousButton").fadeOut(100);
 
 
-/*    function jsonToServerTest(){
-      $.ajax({
-       type: "POST",
-       url: "server/enquePlayer.php",
-       data: {
-            username : "anonym"
-       }
-       }).done(function( serverResponse ) {
-       });
-
-    } */
 }
 
 function slideWaitingBoxUp(actY){
@@ -36,7 +27,16 @@ function slideWaitingBoxUp(actY){
   }else{
     return;
   }
+}
 
-
+function enquePlayer(){
+  $.ajax({
+   type: "POST",
+   url: "server/enquePlayer.php",
+   data: {
+        username : "anonym"
+   }
+   }).done(function( serverResponse ) {
+   });
 
 }
