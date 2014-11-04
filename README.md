@@ -24,8 +24,7 @@ To get you started, we made a damn small instruction.
 
 To create a draw use: 
 OXX
-XOO+
-
+XOO
 OXX
 
 Happy playing!

@@ -808,17 +808,23 @@ function init() {
 	  });
 	  
  }
- function pollServerTest(){
+ function pollServerData(){
  	$.post("server/server.php",function(serverResponse){
 		console.log(serverResponse);
+		updateGameModel(serverResponse);
 		
-	//	setTimeout(pollServerTest,2000);
+		
+		
+		setTimeout(pollServerData,2000);
 	});
  }
  
-
-
-
+ function updateGameModel(data){
+ //TODO: update the own model if the servers data is more actual then the own
+ this.field = data.field;
+ this.clickableSubfieldRects = data.clickableSubfieldRects;
+ 
+ }
 
 /*
  *
