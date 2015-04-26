@@ -1,4 +1,5 @@
 var centerX,endY;
+var requestCounter = 0
 $(document).ready(function(){
   centerX = $(window).scrollLeft() + $(window).width() / 2 - ($("#pleaseWaitBox").width()/2);
   endY = $(window).scrollTop() + $(window).height() / 5;
@@ -25,40 +26,35 @@ function slideWaitingBoxUp(actY){
     return;
   }
 }
-
-function enquePlayer(){
-  $.ajax({
-    type: "POST",
-    url: "server/enquePlayer.php",
-    data: {
-      username : "anonym"
-    }
-  }).done(function( serverResponse ) {
-  });
-
-}
-
-//Examle for rest
 function pollDataFromServer(){
-
+  id =  0,
   $.ajax({
-    url: "http://rest-service.guides.spring.io/greeting",
-  }).done(function( serverResponse ) {
+
+    url: "game/" + id,
+
+  })
+  .done(function( serverResponse ) {
 
     ajaxDone(serverResponse);
 
-    setTimeout(function(){
-      pollDataFromServer();
-    },1000);
+    if(requestCounter >= 3){
+      //TODO: insert real REST stuff here
+      window.location.href = "index.html";
+    }else{
+      setTimeout(function(){
+        pollDataFromServer();
+      },1000);
+
+      requestCounter++;
+    }
+  })
+  .fail(function (){
+
+    $("#pleaseWaitBox").append("<br/> Fuck");
 
   });
-  //TODO: hier pollen bis entweder fehler oder eben spieler gefunden
 
 }
 function ajaxDone(response){
   console.log(response);
-  $("#pleaseWaitBox").append("<br/>" + response.id + "</br>");
-  $("#pleaseWaitBox").append(response.content);
-  $('#pleaseWaitBox').append("<p>irgendwie status?</p>");
-  //TODO: wenn kein Fehler zurück dann hald son polling aktivieren!
 }
