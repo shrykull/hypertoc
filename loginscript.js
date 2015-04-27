@@ -1,5 +1,5 @@
 var centerX,endY;
-var requestCounter = 0
+
 $(document).ready(function(){
   centerX = $(window).scrollLeft() + $(window).width() / 2 - ($("#pleaseWaitBox").width()/2);
   endY = $(window).scrollTop() + $(window).height() / 5;
@@ -11,6 +11,33 @@ function login(){
   $("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(500);
   slideWaitingBoxUp( $(window).scrollTop() + $(window).height());
   $("#loginAnonymousButton").fadeOut(100);
+}
+function createGame(){
+	$("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(500);
+	slideWaitingBoxUp( $(window).scrollTop() + $(window).height());
+	$("#loginAnonymousButton").fadeOut(100);
+	$("#createGameButton").fadeOut(100);
+	
+	
+	$.ajax({
+		type: "POST",
+		url: "http://localhost/hypertoc/server/restProxy/post.php",
+		dataType: "json"
+	})
+	.done(function( serverResponse ) {
+		
+		console.log(serverResponse);
+		
+		//TODO: insert richtige domain
+		$("#linkField").val("http://localhost/play?id=" + serverResponse.id);
+		$("#pleaseWaitBox").append('<br/> <a href="/play?id=' + serverResponse.id +'">Enter game</a>');
+
+	})
+	.fail(function (){
+
+    $("#pleaseWaitBox").append("<br/> Fuck");
+
+  });
 }
 
 function slideWaitingBoxUp(actY){
@@ -25,36 +52,4 @@ function slideWaitingBoxUp(actY){
   }else{
     return;
   }
-}
-function pollDataFromServer(){
-  id =  0,
-  $.ajax({
-
-    url: "game/" + id,
-
-  })
-  .done(function( serverResponse ) {
-
-    ajaxDone(serverResponse);
-
-    if(requestCounter >= 3){
-      //TODO: insert real REST stuff here
-      window.location.href = "index.html";
-    }else{
-      setTimeout(function(){
-        pollDataFromServer();
-      },1000);
-
-      requestCounter++;
-    }
-  })
-  .fail(function (){
-
-    $("#pleaseWaitBox").append("<br/> Fuck");
-
-  });
-
-}
-function ajaxDone(response){
-  console.log(response);
 }
