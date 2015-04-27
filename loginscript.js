@@ -1,5 +1,5 @@
 var centerX,endY;
-
+var gameId;
 $(document).ready(function(){
   centerX = $(window).scrollLeft() + $(window).width() / 2 - ($("#pleaseWaitBox").width()/2);
   endY = $(window).scrollTop() + $(window).height() / 5;
@@ -8,29 +8,56 @@ $(document).ready(function(){
 
 function login(){
   pollDataFromServer()
-  $("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(500);
-  slideWaitingBoxUp( $(window).scrollTop() + $(window).height());
+  showPleaseWaitBox();
   $("#loginAnonymousButton").fadeOut(100);
 }
+
+
+
 function createGame(){
-	$("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(500);
-	slideWaitingBoxUp( $(window).scrollTop() + $(window).height());
+  showPleaseWaitBox();
 	$("#loginAnonymousButton").fadeOut(100);
 	$("#createGameButton").fadeOut(100);
-	
-	
+  $("#abortButton").css('visibility','visible').hide().fadeIn(100)
+
 	$.ajax({
 		type: "POST",
 		url: "http://localhost/hypertoc/server/restProxy/post.php",
 		dataType: "json"
 	})
 	.done(function( serverResponse ) {
-		
+
 		console.log(serverResponse);
-		
+
 		//TODO: insert richtige domain
+    gameId = serverResponse.id;
 		$("#linkField").val("http://localhost/play?id=" + serverResponse.id);
-		$("#pleaseWaitBox").append('<br/> <a href="/play?id=' + serverResponse.id +'">Enter game</a>');
+    $("#enterGameLink").attr('href',"/play?id=" + serverResponse.id);
+
+	})
+	.fail(function (serverResponse){
+
+    $("#pleaseWaitBox").append("<br/> Fuck");
+    console.log(serverResponse);
+  });
+}
+function showPleaseWaitBox(){
+  $("#pleaseWaitBox").css('visibility','visible').hide().fadeIn(500);
+	slideWaitingBoxUp( $(window).scrollTop() + $(window).height());
+}
+
+function abortCreation(){
+  $("#loginAnonymousButton").fadeIn(100);
+  $("#createGameButton").fadeIn(100);
+  $("#abortButton").css('visibility','visible').hide().fadeOut(100);
+  $("#pleaseWaitBox").fadeOut(100);
+  $.ajax({
+    url: "http://localhost/hypertoc/server/restProxy/delete.php?" + $.param({"Id": gameId}),
+		type: "DELETE"
+	})
+	.done(function( serverResponse ) {
+
+		console.log(serverResponse);
 
 	})
 	.fail(function (){
