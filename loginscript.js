@@ -1,35 +1,29 @@
 var centerX,endY;
 var gameId;
+var apiUrl = "http://localhost/hypertoc/api/"
 $(document).ready(function(){
   centerX = $(window).scrollLeft() + $(window).width() / 2 - ($("#pleaseWaitBox").width()/2);
   endY = $(window).scrollTop() + $(window).height() / 5;
   $("#pleaseWaitBox").offset({top: $(window).scrollTop() + $(window).height(),left: centerX});
 });
 
-function login(){
-  pollDataFromServer()
-  showPleaseWaitBox();
-  $("#loginAnonymousButton").fadeOut(100);
-}
-
-
 
 function createGame(){
   showPleaseWaitBox();
 	$("#loginAnonymousButton").fadeOut(100);
 	$("#createGameButton").fadeOut(100);
-  $("#abortButton").css('visibility','visible').hide().fadeIn(100)
+  $("#abortButton").fadeIn(100)
 
 	$.ajax({
 		type: "POST",
-		url: "http://shrye.net/api/",
+		url: apiUrl,
 		dataType: "json"
 	})
 	.done(function( serverResponse ) {
 
 		console.log(serverResponse);
 
-		
+
     gameId = serverResponse.id;
 		$("#linkField").val("http://localhost/play?id=" + serverResponse.id);
     $("#enterGameLink").attr('href',"/play?id=" + serverResponse.id);
@@ -51,21 +45,19 @@ function abortCreation(){
   $("#createGameButton").fadeIn(100);
   $("#abortButton").css('visibility','visible').hide().fadeOut(100);
   $("#pleaseWaitBox").fadeOut(100);
-  //TODO: use way without proxy
+
   $.ajax({
-    url: "http://localhost/hypertoc/server/restProxy/delete.php?" + $.param({"Id": gameId}),
-		type: "DELETE"
-	})
-	.done(function( serverResponse ) {
-
-		console.log(serverResponse);
-
-	})
-	.fail(function (){
-
-    $("#pleaseWaitBox").append("<br/> Fuck");
-
-  });
+    url: apiUrl + gameId,
+		type: "DELETE",
+    statusCode: {
+      200: function(){
+        console.log("deleted");
+      },
+      404: function(){
+        console.log("error while deleting");
+      }
+    }
+	});
 }
 
 function slideWaitingBoxUp(actY){
