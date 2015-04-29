@@ -22,14 +22,14 @@ function createGame(){
 
 	$.ajax({
 		type: "POST",
-		url: "http://localhost/hypertoc/server/restProxy/post.php",
+		url: "http://shrye.net/api/",
 		dataType: "json"
 	})
 	.done(function( serverResponse ) {
 
 		console.log(serverResponse);
 
-		//TODO: insert richtige domain
+		
     gameId = serverResponse.id;
 		$("#linkField").val("http://localhost/play?id=" + serverResponse.id);
     $("#enterGameLink").attr('href',"/play?id=" + serverResponse.id);
@@ -51,6 +51,7 @@ function abortCreation(){
   $("#createGameButton").fadeIn(100);
   $("#abortButton").css('visibility','visible').hide().fadeOut(100);
   $("#pleaseWaitBox").fadeOut(100);
+  //TODO: use way without proxy
   $.ajax({
     url: "http://localhost/hypertoc/server/restProxy/delete.php?" + $.param({"Id": gameId}),
 		type: "DELETE"
