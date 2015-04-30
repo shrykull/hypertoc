@@ -715,7 +715,10 @@ function handleClick(ev) {
         	var clickedSubSubFieldID = getSubfieldCollisionID(clickableSubfieldRects[i], mouseX, mouseY);
         	if (field[clickableSubfieldRects[i].n][clickedSubSubFieldID] == " ") { //check subsubfield may be set by current player
             	field[clickableSubfieldRects[i].n][clickedSubSubFieldID] = currentPlayerSymbol;
-            
+				
+				//TODO: geklicktes sub(sub)field und player mitschicken
+				sendModeToServer();
+				
 				//next player
 				switchTurns();   
 				turnNumber ++;
@@ -790,13 +793,28 @@ function init() {
  * Networking *
  **************
  */
- function importantInfoToJson(){
+ function importantInfoToJson(){//TODO: translate the important data to JSON to send it to the server
 	var json = {
-		"field": field, 
-		"currentPlayerSymbol" : currentPlayerSymbol,
-		"turnNumber" : turnNumber
+		id: 0
 	};
 	return json;
+ }
+ function moveToJSON(player,){
+ 
+ 
+ }
+ function sendModeToServer(){
+	 $.ajax({
+	  type: "PUT",
+	  url: apiUrl,
+	  data: importantInfoToJson(),
+	  async: false
+	  }).done(function( serverResponse ) {
+	   	console.log(serverResponse);
+	  })
+	  .error(function(serverResponse){
+		console.log(serverResponse);
+	  });
  }
  function jsonToServerTest(){
 	 $.ajax({
