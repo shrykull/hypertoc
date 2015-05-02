@@ -25,13 +25,12 @@ function createGame(){
 
 
     gameId = serverResponse.id;
-		$("#linkField").val("http://localhost/play?id=" + serverResponse.id);
-    $("#enterGameLink").attr('href',"/play?id=" + serverResponse.id);
+		$("#linkField").val("http://localhost/index.html?id=" + serverResponse.id);
+    $("#enterGameLink").attr('href',"index.html?id=" + serverResponse.id);
 
 	})
 	.fail(function (serverResponse){
 
-    $("#pleaseWaitBox").append("<br/> Fuck");
     console.log(serverResponse);
   });
 }
