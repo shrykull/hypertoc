@@ -27,6 +27,7 @@ var Rulesets = [
 	}
 ];
 var gameId;
+var ownPlayerId;
 var apiUrl = "http://localhost/hypertoc/api/";
 init();
 
@@ -724,10 +725,11 @@ function handleClick(ev) {
         	if (field[clickableSubfieldRects[i].n][clickedSubSubFieldID] == " ") { //check subsubfield may be set by current player
             	field[clickableSubfieldRects[i].n][clickedSubSubFieldID] = currentPlayerSymbol;
 
+              sendMoveToServer(clickableSubfieldRects[i].n,clickedSubSubFieldID);
       				//next player
       				switchTurns();
       				turnNumber ++;
-              sendMoveToServer(clickableSubfieldRects[i].n,clickedSubSubFieldID);
+
 	            //mark next area
 	            newClickableSubfieldRects = [getSubfieldRects().rects[clickedSubSubFieldID]];
         	}
@@ -791,7 +793,7 @@ function init() {
   drawGameArea();
 
   fetchIdFromGetParam();
-  pollServerForUpdates();
+  updateGameModel();
 }
 
 
