@@ -25,7 +25,7 @@ function createGame(){
 
 
     gameId = serverResponse.id;
-		$("#linkField").val("http://localhost/index.html?id=" + serverResponse.id);
+		$("#linkField").val("http://localhost/hypertoc/index.html?id=" + serverResponse.id);
     $("#enterGameLink").attr('href',"index.html?id=" + serverResponse.id);
 
 	})

@@ -783,6 +783,7 @@ function init() {
 	secondaryDisplayElement.addEventListener('click', handleSecondaryClick, false);
 	document.getElementById("clickButton").addEventListener('click', init, false);
 	document.getElementById("testButton").addEventListener('click', test, false);
+  document.getElementById("networkingButton").addEventListener('click',updateGameModel,false);
 	turnNumber =0;
 	timerString = "XX:XX";
 
@@ -818,12 +819,13 @@ function init() {
  }
  function pollServerForUpdates(){
 
-
-
-   setTimeout(function(){updateGameModel()},2000);
+   updateGameModel();
+   //TODO: prevent overwriting by server while update is beeing send
+   //setInterval(pollServerForUpdates,2000);
 
  }
  function sendMoveToServer(subfieldId,subsubfieldId){
+
 	 $.ajax({
 	  type: "PUT",
 	  url: apiUrl + gameId,
@@ -844,6 +846,13 @@ function updateGameModel(){
     url: apiUrl + gameId
   })
   .done(function(serverResponse){
+    console.log(serverResponse);
+    field = serverResponse.field;
+    if(serverResponse.activePlayer == 0) currentPlayerSymbol = 'X';
+    else currentPlayerSymbol = 'O';
+
+    drawGameArea();
+    update();
 
   })
   .error(function(serverResponse){
