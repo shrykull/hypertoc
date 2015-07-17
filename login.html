@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<!-- HTML5 Hello world by kirupa - http://www.kirupa.com/html5/getting_your_feet_wet_html5_pg1.htm -->
-<html lang="en-us">
 
 <head>
-<meta charset="utf-8">
-<title>Hello...</title>
- <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta charset="utf-8">
+  <title>Hello...</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-    <h2>Hi log in or play anonymously</h2>
-	<button id="loginAnonymousButton" class="buttonStyle" style="width: auto" onclick="login();">Anonymous</button>
-
-	<div id="pleaseWaitBox">Please wait while we are searching a partner for you...</div>
+  <h2>Hi! Create a Game here.</h2>
+	<button id="createGameButton" class="buttonStyle" style="width: auto" onclick="createGame();">Create Game</button>
+	<button id="abortButton" class="buttonStyle" style="width: auto;display: none;" onclick="abortCreation();">Abort</button>
+<!--TODO: Remove ugly effect (mabye just change the button Text?) -->
+	<div id="pleaseWaitBox">
+		<p>Game Created</p>
+		<p> Share the following Link to play: <input type="text" size="55" id="linkField" value="Please wait a sec"/></p>
+    <a id="enterGameLink">Enter Game</a>
+	</div>
 
 
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
