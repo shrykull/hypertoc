@@ -5,8 +5,9 @@
     `--'`-------' `------'`------'
     -------------------------------
 
-
-Hi there! This is fancy Shrykull & Co stuff from outer space!
+==========
+Game Rules
+==========
 
 To get you started, we made a damn small instruction.
 
@@ -27,7 +28,16 @@ OXX
 XOO
 OXX
 
-Happy playing!
+========================================
+Requirements for node.js hypertoc server
+========================================
+* npm install bl
+* npm install node-uuid
+* npm install concat-stream
+* forward your node.js port (default is 8989) to /api/ on your domain
+
+
+Happy tocking!
 The IDE Enforcement team
 
 
