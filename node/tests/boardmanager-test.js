@@ -21,15 +21,15 @@ it ('should create valid game objects', function(done) {
 
   done();
 });
-  /*
 it ('should fail with 404 if you try to make a move on a nonexistant game', function(done) {
   var game = bm.createNewGame();
   game.gameId = "trollolol";
   
   bm.processMove(game, function(error, newGameState) {
     console.log(error + "\n...\n" + newGameState);
-    if ((error) && (error != 404))
+    if ((error) && (error != 404)) {
       test.fail("error was set, but instead of 404 it was " + error);
+    }
     else {
       if (error == 404) {
         if (newGameState) {
@@ -43,6 +43,7 @@ it ('should fail with 404 if you try to make a move on a nonexistant game', func
     }
   });
 });
+  /*
 
 it ('should accept a move and change game attributes accordingly', function(done) {
   var game = bm.createNewGame();

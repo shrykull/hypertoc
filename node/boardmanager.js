@@ -35,8 +35,10 @@ module.exports = {
    //TODO: sanitize input: newGamestate is dirty!
     var oldGamestate = null;
     this.getGame(newGamestate.gameId, function(error, foundGame) {
-      if (error)
+      if (error) {
         callback(error);
+        return;
+      }
       oldGamestate = foundGame;
       if (oldGamestate) {
         //TODO: just accept all moves for now
