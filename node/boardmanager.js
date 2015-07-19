@@ -3,6 +3,7 @@ var ruleset = require('./rulesets');
 
 var games = []; //storage for all running games
 
+var rules = ruleset[0]; //TODO: enable to choose a different ruleset than the default one
 
 module.exports = {
   createNewGame: function() {
@@ -41,13 +42,19 @@ module.exports = {
       }
       oldGamestate = foundGame;
       if (oldGamestate) {
-        //TODO: just accept all moves for now
-        games[newGamestate.gameId] = newGamestate;
-        callback(null, newGamestate); 
+        //TODO: just accept most moves for now
+        rules.doMove(oldGamestate.field, newGamestate.move, function(error, appliedField) {
+          if (error) {
+            callback(error, oldGamestate);
+            return;
+          }
+          newGamestate.field = appliedField; //valid move or not, we use the field the ruleset gives us.
+          newGamestate.currentMoveId = generateId(); //moveID has to change on a successful move
+          games[newGamestate.gameId] = newGamestate;
+          callback(null, newGamestate); 
+        });
       } else 
         callback(404); //game was not found, 404.
-      //TODO: do a validity check
-      //TODO: generate a new MoveToken
     })
   },
   getGame: function(gameId, callback) { //callback signature: function(error, acceptedGamestate)

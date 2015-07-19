@@ -4,9 +4,16 @@ var bm = require('../boardmanager');
  
  
 describe('boardmanager tests', function() {
+//every test probably a game
+var game;
+beforeEach(function() {
+  game = bm.createNewGame();
+});
+afterEach(function() {
+  //lol dunno
+});
+  
 it ('should create valid game objects', function(done) {
-  var game = bm.createNewGame();
-
   //test if keys are matching our expectations
   var keys = Object.keys(game).sort();
   var expectedKeys = ['gameId', 'playerIds', 'currentMoveId', 'field'].sort();
@@ -22,7 +29,6 @@ it ('should create valid game objects', function(done) {
   done();
 });
 it ('should fail with 404 if you try to make a move on a nonexistant game', function(done) {
-  var game = bm.createNewGame();
   game.gameId = "trollolol";
   
   bm.processMove(game, function(error, newGameState) {
@@ -44,18 +50,37 @@ it ('should fail with 404 if you try to make a move on a nonexistant game', func
 });
 
 it ('should accept a move and change game attributes accordingly', function(done) {
-  var game = bm.createNewGame();
-  
   //copy to check for changes later
   var oldGame = JSON.parse(JSON.stringify(game));
   
-  game.field[3][5] = 'X'; //put an X in the center of the top right subfield
+  game.move = { subfield:3, field:5, symbol:'X' }; //put an X in the center of the top right subfield
   var newGame = null;
   bm.processMove(game, function(error, newGameState) {
     newGame = newGameState;
     assert.equal(error, null);
-    assert.notEqual(newGame.field[3][5], oldGame.field[3][5]); //boardmanager should have accepted the move
+    assert.notEqual(newGame.field[3][5], oldGame.field[3][5], "boardmanager did not accept the move"); 
+    assert.notEqual(newGame.currentMoveId, oldGame.currentMoveId, "boardmanager should have generated a new move ID"); 
+    assert.equal(game.gameId, newGameState.gameId, "gameIDs do not match");
+    
+    //check if it's still the same players
+    for (i in game.playerIds.sort()) {
+      if (newGameState.playerIds.sort()[i] != game.playerIds.sort()[i])
+        test.fail("gameIDs do not match");
+    }
+
     done();
+  });
+});
+
+it ('is supposed to reject an illegal move', function(done) {
+  game.move = { subfield:3, field:5, symbol:'X' }; //put an X in the center of the top right subfield
+  bm.processMove(game, function(error, newGameState) {
+    newGameState.move = { subfield:3, field:5, symbol:'O' }; //put an O in the same position
+    bm.processMove(newGameState, function(errorer, newerGameState) {
+      assert.equal(errorer, 403);
+      assert.deepEqual(newerGameState.field, newGameState.field, "the field was not kept in its original state");
+      done();
+    });
   });
 });
 });

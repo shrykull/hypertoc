@@ -5,11 +5,17 @@ module.exports = [
   /*
    * returns false if move was illegal, else true.
    */
-  isValidMove:function(oldGameState, newGameState) { 
-    //TODO: stub
+  isValidMove:function(oldGameState, move) { 
     return true;
   },
-  
+  doMove: function (field, move, callback) {
+    if (field[move.subfield][move.field] == ' ') {
+      field[move.subfield][move.field] = move.symbol;
+      callback(null, field);
+    } else {
+      callback(403, field); //move forbidden, return given field
+    }
+  },
   /*
    *returns playerId of winner or null
    */
