@@ -9,6 +9,9 @@ module.exports = [
     return true;
   },
   doMove: function (field, move, callback) {
+    //TODO: add more rules
+    
+    //check if field is empty where we want to move
     if (field[move.subfield][move.field] == ' ') {
       field[move.subfield][move.field] = move.symbol;
       callback(null, field);

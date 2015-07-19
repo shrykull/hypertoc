@@ -42,7 +42,6 @@ module.exports = {
       }
       oldGamestate = foundGame;
       if (oldGamestate) {
-        //TODO: just accept most moves for now
         rules.doMove(oldGamestate.field, newGamestate.move, function(error, appliedField) {
           if (error) {
             callback(error, oldGamestate);
@@ -61,7 +60,7 @@ module.exports = {
     //look for the game ID, find the old gamestate
     var oldGamestate = games[gameId];
     if (!oldGamestate) //old gamestate wasnt found, return no accepted gamestate and a 404
-      callback(404, null);
+      callback(404);
     else 
       callback(null, oldGamestate);
   }
