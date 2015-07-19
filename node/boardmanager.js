@@ -8,7 +8,7 @@ var rules = ruleset[0]; //TODO: enable to choose a different ruleset than the de
 module.exports = {
   createNewGame: function() {
     var game = {
-      gameId: generateId(), 
+      gameId: generateId(),
       currentMoveId:generateId(),
       playerIds:[generateId(), generateId()], //second player is missing on create, but will get a link with his ID and the game ID to start playing
       field:[
@@ -31,7 +31,7 @@ module.exports = {
     games[game.gameId] = game; //add game to our game storage
     return game;
   },
-    
+
   processMove: function(newGamestate, callback) { //callback signature: function(error, acceptedGamestate)
    //TODO: sanitize input: newGamestate is dirty!
     var oldGamestate = null;
@@ -50,9 +50,9 @@ module.exports = {
           newGamestate.field = appliedField; //valid move or not, we use the field the ruleset gives us.
           newGamestate.currentMoveId = generateId(); //moveID has to change on a successful move
           games[newGamestate.gameId] = newGamestate;
-          callback(null, newGamestate); 
+          callback(null, newGamestate);
         });
-      } else 
+      } else
         callback(404); //game was not found, 404.
     })
   },
@@ -61,8 +61,16 @@ module.exports = {
     var oldGamestate = games[gameId];
     if (!oldGamestate) //old gamestate wasnt found, return no accepted gamestate and a 404
       callback(404);
-    else 
+    else
       callback(null, oldGamestate);
+  },
+  getRandomGame: function(callback){
+    if(games.length > 0){
+      var randomIndex = Math.floor(Math.random() * games.length);
+      callback(null,games[randomIndex]); //TODO: remove the moveID so the game is "read-only"
+    }else{
+      callback(404);
+    }
   }
 }
 
