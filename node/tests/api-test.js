@@ -73,6 +73,31 @@ describe('hypertoc api', function() {
       done(error);
     });
   });
+  
+    it('is supposed to get a created game with the random GET (without parameter)', function(done) {
+    var myGameId = null;
+    var myGame = null;
+    var myServer = test.httpAgent(api.server);
+    myServer.post('/').set('Accept', 'application/json')
+    .expect(function(response) {
+      myGame = JSON.parse(response.text);
+      myGameId = myGame.gameId;
+      assert.notEqual(myGameId, null);
+      myServer.get('/').set('Accept', 'application/json')
+      .expect(200)
+      .end(function(error, secondResponse) {
+        if (error) done(error);
+        else {
+          assert.equal(JSON.stringify(myGame), response.text);
+          done();
+        }
+      });
+    })
+    .end(function(error, response) {
+      if(error)
+      done(error);
+    });
+  });
 });
 
 //TODO: add comments what is tested here and what the result should be

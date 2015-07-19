@@ -51,6 +51,7 @@ var server = http.createServer(function(request, response) {
       if (requestedId) { //get a specific game if requestedId was set.
         boardmanager.getGame(requestedId, sendProcessedBoardToClient);
       } else { //return the oldest game with only 1 player
+        //TODO: don't get random, get oldest!
         boardmanager.getRandomGame(sendProcessedBoardToClient);
       }
     }));

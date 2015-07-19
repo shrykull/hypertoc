@@ -1,7 +1,7 @@
 var uuid = require('node-uuid'); //a simple tool to generate unique IDs
 var ruleset = require('./rulesets');
 
-var games = []; //storage for all running games
+var games = {}; //storage for all running games
 
 var rules = ruleset[0]; //TODO: enable to choose a different ruleset than the default one
 
@@ -31,7 +31,7 @@ module.exports = {
         lastMove:null,
       }
     };
-    games[game.gameId] = game; //add game to our game storage
+    games[game.gameId] = JSON.parse(JSON.stringify(game)); //copy game to our game storage
     return game;
   },
 
@@ -68,10 +68,13 @@ module.exports = {
       callback(null, oldGamestate);
   },
   getRandomGame: function(callback){
-    if(games.length > 0){
-      var randomIndex = Math.floor(Math.random() * games.length);
-      callback(null,games[randomIndex]); //TODO: remove the moveID so the game is "read-only"
-    }else{
+    if (Object.keys(games).length > 0) {
+      var keys = Object.keys(games);
+      var randomIndex = keys[Math.floor(Math.random() * keys.length)];
+      var randomGame = JSON.parse(JSON.stringify(games[randomIndex])); //copy a game from our game collection
+      randomGame.currentMoveId = null; //remove move ID so random watchers can't interfere
+      callback(null, randomGame); 
+    } else {
       callback(404);
     }
   }
