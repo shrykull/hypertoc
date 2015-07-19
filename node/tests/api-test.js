@@ -50,15 +50,13 @@ describe('hypertoc api', function() {
       else done();
     });
   });
-/* commented out for same reson as the first test
   it('is supposed to get the same game multiple times with given IDs', function(done) {
     var myGameId = null;
     var myGame = null;
-    test.httpAgent(api.server).get('/').set('Accept', 'application/json')
+    test.httpAgent(api.server).post('/').set('Accept', 'application/json')
     .expect(function(response) {
       myGame = JSON.parse(response.text);
       myGameId = myGame.gameId;
-      console.log("sdfsdf");
       assert.notEqual(myGameId, null);
       test.httpAgent(api.server).get('/' + myGameId).set('Accept', 'application/json')
       .expect(200)
@@ -74,7 +72,7 @@ describe('hypertoc api', function() {
       if(error)
       done(error);
     });
-  });*/
+  });
 });
 
 //TODO: add comments what is tested here and what the result should be
