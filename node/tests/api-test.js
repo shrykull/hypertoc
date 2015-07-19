@@ -1,3 +1,7 @@
+var http = require('http');
+var assert = require('assert');
+var concatStream = require('concat-stream');
+
 var test = require('unit.js');
 
 var api = require("../hypertoc-api");
@@ -5,22 +9,22 @@ var api = require("../hypertoc-api");
 describe('hypertoc api', function() {
   /* Commentet out, becaue there are no games created when running the test, so there wont be a random game to send
   it('should return a status 200 and a random game as data on GET without data', function(done) {
-    test.httpAgent(api.server)
-    .get('/')
-    .set('Accept', 'application/json')
-    .expect(200)
-    .expect(function(response) {
-      var responseGame;
-      if (responseGame !== null)
-      responseGame = JSON.parse(response.text);
-      if (typeof(responseGame) !== "object") return "Did not get object data";
-    })
-    .end(function(error, response) {
-      if (error)
-        done(error)
-      else
-        done();
-    });
+  test.httpAgent(api.server)
+  .get('/')
+  .set('Accept', 'application/json')
+  .expect(200)
+  .expect(function(response) {
+  var responseGame;
+  if (responseGame !== null)
+  responseGame = JSON.parse(response.text);
+  if (typeof(responseGame) !== "object") return "Did not get object data";
+  })
+  .end(function(error, response) {
+  if (error)
+  done(error)
+  else
+  done();
+  });
   });*/
 
   it ('should return 404 on GET data with incorrect gameId', function(done) {
@@ -32,9 +36,9 @@ describe('hypertoc api', function() {
     .expect(404)
     .end(function(error, response) {
       if (error)
-      done(error)
+        done(error);
       else
-      done();
+        done();
     });
   });
 
@@ -52,7 +56,32 @@ describe('hypertoc api', function() {
       if(error) done(error);
       else done();
     });
-  })
+  });
+/* commented out for same reson as the first test
+  it('is supposed to get the same game multiple times with given IDs', function(done) {
+    var myGameId = null;
+    var myGame = null;
+    test.httpAgent(api.server).get('/').set('Accept', 'application/json')
+    .expect(function(response) {
+      myGame = JSON.parse(response.text);
+      myGameId = myGame.gameId;
+      console.log("sdfsdf");
+      assert.notEqual(myGameId, null);
+      test.httpAgent(api.server).get('/' + myGameId).set('Accept', 'application/json')
+      .expect(200)
+      .end(function(error, secondResponse) {
+        if (error) done(error);
+        else {
+          assert.equal(JSON.stringify(myGame), response.text);
+          done();
+        }
+      });
+    })
+    .end(function(error, response) {
+      if(error)
+      done(error);
+    });
+  });*/
 });
 
 //TODO: add comments what is tested here and what the result should be
