@@ -3,7 +3,7 @@ var assert = require('assert');
 var bm = require('../boardmanager');
  
  
-describe('boardmanager', function() {
+describe('boardmanager tests', function() {
 it ('should create valid game objects', function(done) {
   var game = bm.createNewGame();
 
@@ -26,7 +26,6 @@ it ('should fail with 404 if you try to make a move on a nonexistant game', func
   game.gameId = "trollolol";
   
   bm.processMove(game, function(error, newGameState) {
-    console.log(error + "\n...\n" + newGameState);
     if ((error) && (error != 404)) {
       test.fail("error was set, but instead of 404 it was " + error);
     }
@@ -43,22 +42,21 @@ it ('should fail with 404 if you try to make a move on a nonexistant game', func
     }
   });
 });
-  /*
 
 it ('should accept a move and change game attributes accordingly', function(done) {
   var game = bm.createNewGame();
-  var oldGame = game; //copy to check for changes later
   
-  game.field[3][5] == 'X'; //put an X in the center of the top right subfield
+  //copy to check for changes later
+  var oldGame = JSON.parse(JSON.stringify(game));
   
+  game.field[3][5] = 'X'; //put an X in the center of the top right subfield
   var newGame = null;
   bm.processMove(game, function(error, newGameState) {
     newGame = newGameState;
-    //assert.notEqual(newGame,oldGame);
+    assert.equal(error, null);
     assert.notEqual(newGame.field[3][5], oldGame.field[3][5]); //boardmanager should have accepted the move
     done();
   });
 });
-  */
 });
       
