@@ -1,10 +1,3 @@
-    ,--.,------.  ,------.,------.
-    |  ||  .-.  \ |  .---'|  .---'
-    |  ||  |  \  :|  `--, |  `--,
-    |  ||  '--'  /|  `---.|  `---.
-    `--'`-------' `------'`------'
-    -------------------------------
-
 ==========
 Game Rules
 ==========
@@ -35,10 +28,13 @@ Requirements for node.js hypertoc server
 * npm install node-uuid
 * npm install concat-stream
 * forward your node.js port (default is 8989) to /api/ on your domain
-
+* Only needed for code tests
+  * npm install unit.js
+  * npm install mocha
+  
+Creating an automated installation script (eg NPM) is still a TODO for me.
 
 Happy tocking!
-The IDE Enforcement team
 
 
 ## Support & Documentation

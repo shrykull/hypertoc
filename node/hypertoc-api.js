@@ -6,6 +6,7 @@ var boardmanager = require('./boardmanager');
 
 var port = 8989;
 
+
 var server = http.createServer(function(request, response) {
     /*
    * HELPER FUNCTIONS
@@ -30,8 +31,6 @@ var server = http.createServer(function(request, response) {
       sendObject(gamestate);
     }
   }
-
-  console.log(request.method + ":::");
   
   /*
    * HTTP GET
@@ -39,17 +38,19 @@ var server = http.createServer(function(request, response) {
   if (request.method == "GET") {
     var requestedId = null;
     request.pipe(concatStream(function(data) { //collect incoming datastream
-      //TODO: find out requestes Id, if it was requested
+      if (data != "") {
+        data = JSON.parse(data.toString());
+        if (data.gameId)
+          requestedId = data.gameId;
+      }    
+      if (!requestedId) { //send new Game if requestedId was not set
+        var game = boardmanager.createNewGame();
+        sendObject(game);
+        return;
+      } else { //get a specific game if requestedId was set.
+        boardmanager.getGame(requestedId, sendProcessedBoardToClient);
+      }
     }));
-    
-    //send new Game if requestedId was not set
-    if (!requestedId) {
-      var game = boardmanager.createNewGame();
-      sendObject(game);
-      return;
-    } else {
-      boardmanager.getGame(requestedId, sendProcessedBoardToClient);
-    }
   }
   
    /*
@@ -57,7 +58,6 @@ var server = http.createServer(function(request, response) {
    */
   if (request.method == "POST") {
     request.pipe(concatStream(function (data) { //collect incoming datastream
-    console.log("data: " + data);
       boardmanager.processMove(JSON.parse(data), sendProcessedBoardToClient);
     }));
   }  

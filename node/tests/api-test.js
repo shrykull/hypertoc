@@ -1,26 +1,41 @@
-var http = require('http');
+var assert = require('assert');
+var test = require('unit.js');
+
 var api = require("../hypertoc-api");
 
-var request = http.request({
-    host:"localhost",
-    port:8989,
-    method: 'POST'
-  }, function(response) {  
-  var data = '';
-    response.on('data', function(d) {
-      data += d;
-    });
-    response.on('error', function (d) {
-      console.log("error " + d);
-      api.server.close();
-    });
-    response.on('end', function() {
-      console.log("test response: " + data.toString());
-      api.server.close();
-    })
+describe('hypertoc api', function() {
+  it('should return a status 200 and a new game as data on GET without data', function(done) {
+    test.httpAgent(api.server)
+      .get('/')
+      .set('Accept', 'application/json')
+      .expect(200)
+      .expect(function(response) {
+        var responseGame;
+        if (responseGame !== null)
+          responseGame = JSON.parse(response.text);
+        if (typeof(responseGame) !== "object") return "Did not get object data";
+      })
+      .end(function(error, response) {
+        if (error)
+          done(error)
+        else
+          done();
+      });
   });
+
+  it ('should return 404 on GET data with incorrect gameId', function(done) {
+    test.httpAgent(api.server)
+      .get('/')
+      .send({gameId:5}) //unit.js automatically parses this as JSON
+      .expect(404)
+      .end(function(error, response) {
+        if (error)
+          done(error)
+        else
+          done();
+      });
+  });
+
+});
   
-//TODO: make this a test that can fail
 //TODO: add comments what is tested here and what the result should be
-request.write(JSON.stringify({gameId:5}));
-request.end();

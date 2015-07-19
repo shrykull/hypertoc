@@ -32,17 +32,27 @@ module.exports = {
   },
     
   processMove: function(newGamestate, callback) { //callback signature: function(error, acceptedGamestate)
-    //TODO: sanitize input: newGamestate is dirty!
-  
-    //look for the game ID, find the old gamestate
-    console.log("got gamestate " + newGamestate.gameId + "!");
-    var oldGamestate = games[newGamestate.gameId];
-    if (!oldGamestate) { //old gamestate wasnt found, return no accepted gamestate and a 404
-      callback(404, null);
-    } 
+   //TODO: sanitize input: newGamestate is dirty!
+    var oldGamestate = null;
+    this.getGame(newGamestate.gameId, function(error, foundGame) {
+      if (error)
+        return;
+      oldGamestate = games[newGamestate.gameId];
+    })
     //TODO: do a validity check
     //TODO: generate a new MoveToken
-    callback(null, newGamestate); //TODO: just accept all moves for now
+    if (oldGamestate)
+      callback(null, newGamestate); //TODO: just accept all moves for now
+    else 
+      callback(404, null); //game was not found, 404.
+  },
+  getGame: function(gameId, callback) { //callback signature: function(error, acceptedGamestate)
+    //look for the game ID, find the old gamestate
+    var oldGamestate = games[gameId];
+    if (!oldGamestate) //old gamestate wasnt found, return no accepted gamestate and a 404
+      callback(404, null);
+    else 
+      callback(null, oldGamestate);
   }
 }
 
