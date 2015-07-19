@@ -39,10 +39,12 @@ var server = http.createServer(function(request, response) {
     var requestedId = null;
     request.pipe(concatStream(function(data) { //collect incoming datastream
       if (data != "") {
-        data = JSON.parse(data.toString());
+        data = JSON.parse(data);
         if (data.gameId)
           requestedId = data.gameId;
-      }    
+      } else {
+        console.log(request.url);
+      }
       if (!requestedId) { //send new Game if requestedId was not set
         var game = boardmanager.createNewGame();
         sendObject(game);

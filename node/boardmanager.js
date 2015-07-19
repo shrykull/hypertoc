@@ -36,15 +36,17 @@ module.exports = {
     var oldGamestate = null;
     this.getGame(newGamestate.gameId, function(error, foundGame) {
       if (error)
-        return;
-      oldGamestate = games[newGamestate.gameId];
+        callback(error);
+      oldGamestate = foundGame;
+      if (oldGamestate) {
+        //TODO: just accept all moves for now
+        games[newGamestate.gameId] = newGamestate;
+        callback(null, newGamestate); 
+      } else 
+        callback(404); //game was not found, 404.
+      //TODO: do a validity check
+      //TODO: generate a new MoveToken
     })
-    //TODO: do a validity check
-    //TODO: generate a new MoveToken
-    if (oldGamestate)
-      callback(null, newGamestate); //TODO: just accept all moves for now
-    else 
-      callback(404, null); //game was not found, 404.
   },
   getGame: function(gameId, callback) { //callback signature: function(error, acceptedGamestate)
     //look for the game ID, find the old gamestate

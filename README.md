@@ -30,7 +30,7 @@ Requirements for node.js hypertoc server
 * forward your node.js port (default is 8989) to /api/ on your domain
 * Only needed for code tests
   * npm install unit.js
-  * npm install mocha
+  * npm install -g mocha
   
 Creating an automated installation script (eg NPM) is still a TODO for me.
 

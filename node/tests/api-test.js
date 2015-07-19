@@ -1,4 +1,3 @@
-var assert = require('assert');
 var test = require('unit.js');
 
 var api = require("../hypertoc-api");
@@ -26,6 +25,8 @@ describe('hypertoc api', function() {
   it ('should return 404 on GET data with incorrect gameId', function(done) {
     test.httpAgent(api.server)
       .get('/')
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
       .send({gameId:5}) //unit.js automatically parses this as JSON
       .expect(404)
       .end(function(error, response) {
@@ -35,7 +36,6 @@ describe('hypertoc api', function() {
           done();
       });
   });
-
 });
   
 //TODO: add comments what is tested here and what the result should be
