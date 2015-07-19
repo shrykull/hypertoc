@@ -16,7 +16,7 @@ afterEach(function() {
 it ('should create valid game objects', function(done) {
   //test if keys are matching our expectations
   var keys = Object.keys(game).sort();
-  var expectedKeys = ['gameId', 'playerIds', 'currentMoveId', 'field'].sort();
+  var expectedKeys = ['gameId', 'playerIds', 'currentMoveId', 'board'].sort();
   if (JSON.stringify(keys) != JSON.stringify(expectedKeys))  
     test.fail("game object attributes do not match our expectation:\n found  : " + keys + "\nexpected: " + expectedKeys);
   
@@ -58,7 +58,7 @@ it ('should accept a move and change game attributes accordingly', function(done
   bm.processMove(game, function(error, newGameState) {
     newGame = newGameState;
     assert.equal(error, null);
-    assert.notEqual(newGame.field[3][5], oldGame.field[3][5], "boardmanager did not accept the move"); 
+    assert.notEqual(newGame.board.field[3][5], oldGame.board.field[3][5], "boardmanager did not accept the move"); 
     assert.notEqual(newGame.currentMoveId, oldGame.currentMoveId, "boardmanager should have generated a new move ID"); 
     assert.equal(game.gameId, newGameState.gameId, "gameIDs do not match");
     

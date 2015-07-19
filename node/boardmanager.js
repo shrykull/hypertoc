@@ -11,22 +11,25 @@ module.exports = {
       gameId: generateId(), 
       currentMoveId:generateId(),
       playerIds:[generateId(), generateId()], //second player is missing on create, but will get a link with his ID and the game ID to start playing
-      field:[
-      //top row
-        [" "," "," "," "," "," "," "," "," "],
-        [" "," "," "," "," "," "," "," "," "],
-        [" "," "," "," "," "," "," "," "," "],
+      board:{
+        field:[
+          //top row
+          [" "," "," "," "," "," "," "," "," "],
+          [" "," "," "," "," "," "," "," "," "],
+          [" "," "," "," "," "," "," "," "," "],
 
-        //mid row
-        [" "," "," "," "," "," "," "," "," "],
-        [" "," "," "," "," "," "," "," "," "],
-        [" "," "," "," "," "," "," "," "," "],
+          //mid row
+          [" "," "," "," "," "," "," "," "," "],
+          [" "," "," "," "," "," "," "," "," "],
+          [" "," "," "," "," "," "," "," "," "],
 
-        //bottom row
-        [" "," "," "," "," "," "," "," "," "],
-        [" "," "," "," "," "," "," "," "," "],
-        [" "," "," "," "," "," "," "," "," "],
-      ],
+          //bottom row
+          [" "," "," "," "," "," "," "," "," "],
+          [" "," "," "," "," "," "," "," "," "],
+          [" "," "," "," "," "," "," "," "," "],
+        ],
+        lastMove:null,
+      }
     };
     games[game.gameId] = game; //add game to our game storage
     return game;
@@ -42,12 +45,12 @@ module.exports = {
       }
       oldGamestate = foundGame;
       if (oldGamestate) {
-        rules.doMove(oldGamestate.field, newGamestate.move, function(error, appliedField) {
+        rules.doMove(oldGamestate.board, newGamestate.move, function(error, appliedBoard) {
           if (error) {
             callback(error, oldGamestate);
             return;
           }
-          newGamestate.field = appliedField; //valid move or not, we use the field the ruleset gives us.
+          newGamestate.board = appliedBoard; 
           newGamestate.currentMoveId = generateId(); //moveID has to change on a successful move
           games[newGamestate.gameId] = newGamestate;
           callback(null, newGamestate); 
