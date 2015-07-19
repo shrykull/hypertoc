@@ -43,7 +43,10 @@ var server = http.createServer(function(request, response) {
         if (data.gameId)
           requestedId = data.gameId;
       } else {
-        console.log(request.url);
+        var urlsplit = request.url.split('/');
+        if (urlsplit.length > 1) {
+          requestedId = urlsplit[1];
+        }
       }
       if (!requestedId) { //send new Game if requestedId was not set
         var game = boardmanager.createNewGame();
