@@ -1,3 +1,7 @@
+var http = require('http');
+var assert = require('assert');
+var concatStream = require('concat-stream');
+
 var test = require('unit.js');
 
 var api = require("../hypertoc-api");
@@ -31,10 +35,35 @@ describe('hypertoc api', function() {
       .expect(404)
       .end(function(error, response) {
         if (error)
-          done(error)
+          done(error);
         else
           done();
       });
+  });
+  
+  it('is supposed to get the same game multiple times with given IDs', function(done) {
+    var myGameId = null;
+    var myGame = null;
+    test.httpAgent(api.server).get('/').set('Accept', 'application/json')
+    .expect(function(response) {
+        myGame = JSON.parse(response.text);
+        myGameId = myGame.gameId;
+        console.log("sdfsdf");
+        assert.notEqual(myGameId, null);
+        test.httpAgent(api.server).get('/' + myGameId).set('Accept', 'application/json')
+        .expect(200)
+        .end(function(error, secondResponse) {
+          if (error) done(error);
+          else {
+            assert.equal(JSON.stringify(myGame), response.text);
+            done();
+          }
+        });
+      })
+    .end(function(error, response) {
+      if(error)
+        done(error);
+    });
   });
 });
   
