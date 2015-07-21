@@ -12,10 +12,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="hypertoc.js"></script>
-<div id="mainContent" class="container" ng-controller="mainContentCtrl">
-	<div>
-		<p id="gameView" width="500" height="500"></p>
-		<p id="secondaryDisplay" width="333" height="167"></p>
+<div id="mainContent" ng-controller="mainContentCtrl">
+	<div class="container">
+		<div id="gameView" class="col-sm-6"></div>
+		<div id="secondaryDisplay" class="col-sm-6 text-left"></div>
 	</div>
 	<div>
 		<button id="clickButton" class="buttonStyle btn btn-primary">click here to reset the game</button>
