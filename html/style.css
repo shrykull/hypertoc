@@ -47,3 +47,27 @@
 	color: #669900;
 	cursor: pointer;
 }
+
+#gameViewBoardShapes {
+  stroke-linecap:round;
+  stroke:purple;
+}
+
+#gameViewBoardShapes .boardShapeMain {
+  stroke-width:4;
+  stroke:purple;
+}
+
+#gameViewBoardShapes .boardShapeSmall {
+  stroke-width:3;
+  stroke:orange;
+}
+
+#gameViewBoarddecoration {
+  stroke-width:3;
+  stroke-linecap:round;
+  stroke:black;
+}
+#gameViewBoarddecoration .boardDecorationOuter {
+  stroke:#FCF9D6;
+}
