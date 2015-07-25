@@ -63,6 +63,11 @@
   stroke:orange;
 }
 
+#gameView g .gameViewMarkedSubfield {
+    fill:lightgreen;
+    fill-opacity:0.5;
+}
+
 #gameViewBoarddecoration {
   stroke-width:3;
   stroke-linecap:round;

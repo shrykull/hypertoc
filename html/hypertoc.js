@@ -12,6 +12,7 @@ hypertoc.controller('mainContentCtrl', function($scope, BoardUIService) {
 hypertoc.factory('BoardUIService', function(GameDataService, InputEventService, DrawService) {   
   var drawFunction = function() {
     DrawService.drawBoardDecorations();
+    DrawService.drawBoardSymbols(GameDataService.board);
     DrawService.drawBoardShape();
   };
   return {
@@ -62,17 +63,26 @@ hypertoc.factory('InputEventService', function() {
 });
 
 hypertoc.factory('DrawService', function() {
+  /*
+   * Style Parameters (edit as needed)
+   */
   var width = 500;
   var height = 500;
   
   var marginPercentage = 0.01;
   
+  /*
+   * calculated simplifiers for use later (add more as needed)
+   */
   var margin = {
                 top:height * marginPercentage, 
                 bottom:height * marginPercentage, 
                 left: width * marginPercentage, 
                 right: width * marginPercentage};
-  
+
+  var subfieldwidth  = (width  - (margin.left + margin.right  + marginPercentage * width  * 2)) / 3,
+      subfieldheight = (height - (margin.top  + margin.bottom + marginPercentage * height * 2)) / 3;
+
   var gameView = d3.select('#gameContainer')
     .append('svg')
     .attr("width", width)
@@ -103,10 +113,33 @@ hypertoc.factory('DrawService', function() {
         .attr("x2", left + verticalSeparation*i)
         .attr("y2", bottom);
     }
-    
   };
+  
+  var generateActiveSubfieldMarkers = function() {
+    var xpos, ypos, absoluteXpos, absoluteYpos;
+    
+    for (var i = 0; i < 10; ++i) {
+        xpos = i % 3;
+        ypos = Math.floor(i / 3);
+        absoluteXpos = margin.left + marginPercentage * width * xpos + xpos * subfieldwidth;
+        absoluteYpos = margin.top + marginPercentage * height * ypos + ypos * subfieldheight;
+        gameView
+        .append("g") //generate a group with id to find it again once we get data
+            .attr("id", "subfield" + i)
+            .attr("transform", "translate("+ absoluteXpos + "," + absoluteYpos + ")")
+        .append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", subfieldwidth)
+            .attr("height", subfieldheight)
+            .attr("class", "gameViewMarkedSubfield")
+            .attr("visibility", "hidden"); //default visibility is hidden, we'll activate it once needed
+    }
+  }
   return {
     drawBoardShape: function() {
+      //generate groups with unique IDs to draw our stuff on later on.
+      generateActiveSubfieldMarkers();
      
       var boardShape = gameView.append("g")
         .attr("id", "gameViewBoardShapes");
@@ -153,6 +186,9 @@ hypertoc.factory('DrawService', function() {
         .attr("y1", height - margin.bottom)
         .attr("x2", width - margin.right)
         .attr("y2", height - margin.bottom);
+    },
+    drawBoardSymbols: function(board) {
+        //draw symbols into those groups
     }
-  };
+   };
 });
