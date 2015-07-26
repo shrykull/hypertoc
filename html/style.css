@@ -48,6 +48,21 @@
 	cursor: pointer;
 }
 
+.marker {
+  stroke-linecap:round;
+  stroke:purple;
+  stroke-width:6;
+  fill:purple;
+}
+
+.marker.marker-x {
+  stroke:darkred;
+}
+.marker.marker-o {
+  stroke:darkgreen;
+  fill:none
+}
+
 #gameViewBoardShapes {
   stroke-linecap:round;
   stroke:purple;
@@ -69,7 +84,7 @@
 }
 
 #gameViewBoarddecoration {
-  stroke-width:3;
+  stroke-width:2;
   stroke-linecap:round;
   stroke:black;
 }
