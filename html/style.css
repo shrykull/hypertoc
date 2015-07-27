@@ -54,7 +54,10 @@
   stroke-width:6;
   fill:purple;
 }
-
+.marker.symbol-background {
+  fill-opacity:0.000001;
+  stroke-width:0;
+}
 .marker.marker-x {
   stroke:darkred;
 }

@@ -91,6 +91,13 @@ hypertoc.factory('DrawService', function() {
           
           currentMarkerGroup = subfield.append("g").attr("id", "symbol-" + linearSymbolIndex);
           currentMarkerGroup.attr("transform", "translate(" + absoluteXpos + ", " + absoluteYpos + ")");
+          currentMarkerGroup.append("g")
+            .attr("id", "symbol-space-" + linearSymbolIndex)
+            .attr("visibility", "visible")
+            .attr("class", "marker symbol-background")
+            .append("rect")
+              .attr("x", 0).attr("y", 0)
+              .attr("width", symbolWidth).attr("height", symbolHeight);
           x = currentMarkerGroup.append("g");
           x.attr("class", "marker marker-x")
             .attr("visibility", "hidden")

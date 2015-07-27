@@ -2,20 +2,23 @@ var hypertoc = angular.module('hypertoc', []);
 
 hypertoc.controller('mainContentCtrl', function($scope, BoardUIService) {
   $scope.board = BoardUIService;
-  
+   
   angular.element(document).ready(function() {
     BoardUIService.updateBoard();
   });
 
 });
 
-hypertoc.factory('BoardUIService', function(GameDataService, InputEventService, DrawService) {   
+hypertoc.factory('BoardUIService', function(GameDataService, InputEventService, DrawService) {  
+  
+ 
   var drawFunction = function() {
     DrawService.drawBoardSymbols(GameDataService.getBoard()); //applies visibility rules for all x and o according to board
   };
   
   angular.element(document).ready(function() {
-    DrawService.initializeBoard();
+    DrawService.initializeBoard();  
+    InputEventService.registerOnClickEvents();
   });
   
   return {
@@ -57,10 +60,4 @@ hypertoc.factory('GameDataService', function() {
       return gameData.board
     }
   }
-});
-
-hypertoc.factory('InputEventService', function() {
-  return {
-    //TODO: define click events
-  };
 });
