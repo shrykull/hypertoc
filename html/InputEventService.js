@@ -6,10 +6,11 @@ var click = function(subfieldIndex, symbolIndex) {
 
 var hoverIn = function(subfieldIndex, symbolIndex) {
   console.log("In " + subfieldIndex + "/" + symbolIndex);
-}
+};
+
 var hoverOut = function(subfieldIndex, symbolIndex) {
   console.log("Out " + subfieldIndex + "/" + symbolIndex);
-}
+};
 
 hypertoc.factory('InputEventService', function() {
   var init = function() {
