@@ -1,0 +1,96 @@
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.mainContent {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: xx-large;
+  font-weight: bold;
+  background-color: #f0f0f0;
+  width: 100%;
+  text-align: center;
+}
+.gameView {
+  background-color: #d0d0d0;
+}
+.buttonStyle {
+  border-radius: 4px;
+  border: thin solid #F0E020;
+  padding: 5px;
+  background-color: #F8F094;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+  color: #663300;
+  width: 500px;
+
+  &:hover {
+    border: thin solid #FFCC00;
+    background-color: #FCF9D6;
+    color: #996633;
+    cursor: pointer;
+  }
+
+  &:active {
+    border: thin solid #99CC00;
+    background-color: #F5FFD2;
+    color: #669900;
+    cursor: pointer;
+  }
+}
+
+.marker {
+  stroke-linecap: round;
+  stroke: purple;
+  stroke-width: 6;
+  fill: purple;
+
+  &.symbol-background {
+    fill-opacity: 0.000001;
+    stroke-width: 0;
+  }
+  &.marker-x {
+    stroke: darkred;
+  }
+  &.marker-o {
+    stroke: darkgreen;
+    fill: none
+  }
+}
+.gameViewBoardShapes {
+  stroke-linecap: round;
+  stroke: purple;
+
+  .boardShapeMain {
+    stroke-width: 4;
+    stroke: purple;
+  }
+  .boardShapeSmall {
+    stroke-width: 3;
+    stroke: orange;
+  }
+}
+
+.gameView g .gameViewMarkedSubfield {
+  fill: lightgreen;
+  fill-opacity: 0.5;
+}
+.gameViewBoarddecoration {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke: black;
+
+  .boardDecorationOuter {
+    stroke: #FCF9D6;
+  }
+}
+/* Login */
+.pleaseWaitBox {
+  border-radius: 4px;
+  font-size: 30px;
+  border: thin solid black;
+  background-color: lightblue;
+  visibility: hidden;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+}
