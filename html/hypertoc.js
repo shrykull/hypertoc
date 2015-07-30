@@ -19,9 +19,13 @@ hypertoc.factory('BoardUIService', function(GameDataService, InputEventService, 
   angular.element(document).ready(function() {
     DrawService.initializeBoard();  
     InputEventService.addMouseEventHooks();
-    InputEventService.events.click = function(sf, sym) { //TODO: elaborate this test to actually do something
+    InputEventService.events.click = function(sf, sym) { //TODO: elaborate this to actually do something
       console.log("sf/sym " + sf+"/"+sym);
     }
+    //TODO: add InputEventService.events.mouseIn and mouseOut
+    
+    //TODO: draw stuff on secondary display
+    
   });
   
   return {
