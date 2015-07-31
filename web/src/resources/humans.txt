@@ -3,7 +3,9 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    shrykull
+    Whateverest
+    georg94    
 
 # THANKS
 
@@ -12,4 +14,4 @@
 # TECHNOLOGY COLOPHON
 
     HTML5, CSS3
-    jQuery, Modernizr
+    jQuery, Modernizr, AngularJS, D3
