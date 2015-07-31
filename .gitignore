@@ -2,5 +2,5 @@
 /server/target
 /node/node_modules
 */**/node_modules
-html/css/style.css
-html/js/main.*js
+web/dist
+web/target
