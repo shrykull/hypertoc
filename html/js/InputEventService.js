@@ -25,13 +25,18 @@ hypertoc.factory('InputEventService', function() {
     //add onclick function to all symbol-* ids
     for (var subfieldIndex = 0; subfieldIndex < 9; ++subfieldIndex) {
       for (var symbolIndex = 0; symbolIndex < 9; ++symbolIndex) {
-        d3.select('#subfield-' + subfieldIndex).select('#symbol-' + symbolIndex)
-          .attr("onclick", "click(" + subfieldIndex +  "," + symbolIndex + ")")
-          .attr("onmouseover", "hoverIn(" + subfieldIndex +  "," + symbolIndex + ")")
-          .attr("onmouseout", "hoverOut(" + subfieldIndex +  "," + symbolIndex + ")");
+        (function(subfieldIndex, symbolIndex) {
+          d3.select('#subfield-' + subfieldIndex).select('#symbol-' + symbolIndex)
+            .on({
+              "click": function() {click(subfieldIndex, symbolIndex); d3.event.stopPropagation();},
+              "onmouseover": hoverIn(subfieldIndex, symbolIndex),
+              "onmouseout": hoverOut(subfieldIndex, symbolIndex)
+            });
+        })(subfieldIndex, symbolIndex)
       }
     }
-  }
+  };
+
   return {
     //TODO: define click events
     addMouseEventHooks:init,
