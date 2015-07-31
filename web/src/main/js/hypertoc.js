@@ -23,9 +23,9 @@ hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'Dra
       console.log("sf/sym " + sf+"/"+sym);
     }
     //TODO: add InputEventService.events.mouseIn and mouseOut
-    
+
     //TODO: draw stuff on secondary display
-    
+
   });
 
   return {
