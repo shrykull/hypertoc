@@ -10,8 +10,6 @@ hypertoc.controller('mainContentCtrl', ['$scope', 'BoardUIService', function($sc
 }]);
 
 hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'DrawService', function(GameDataService, InputEventService, DrawService) {
-
-
   var drawFunction = function() {
     DrawService.drawBoardSymbols(GameDataService.getBoard()); //applies visibility rules for all x and o according to board
   };
@@ -28,12 +26,14 @@ hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'Dra
 
   });
 
+  GameDataService.addBoardRefreshHook(drawFunction);
+
   return {
     updateBoard:drawFunction,
   };
 }]);
 
-hypertoc.factory('GameDataService', function() {
+hypertoc.factory('GameDataService',  ['$http', 'ConfigService', function($http, ConfigService) {
   //TODO: stub: make this data come via Network
   var gameData = {
     //TODO: stub: IDs don't work (see networking todo above)
@@ -62,9 +62,26 @@ hypertoc.factory('GameDataService', function() {
     }
   };
 
+  var refreshHooks = [];
+
+  $http.get(ConfigService.getEndpoint()).then(function(response) {
+    gameData = response.data;
+    refreshHooks.forEach(function(f) { f(); }); //tell everybody we got a new board
+  });
   return {
     getBoard: function() {
-      return gameData.board
+      return gameData.board;
+    },
+    addBoardRefreshHook: function(callback) {
+      refreshHooks.push(callback);
     }
-  }
-});
+  };
+}]);
+
+hypertoc.factory('ConfigService', ['$http', function($http) {
+  var config = {
+    host:"/api",
+    getEndpoint: function() { return this.host + "/"; }
+  };
+  return config;
+}]);
