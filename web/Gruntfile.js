@@ -80,6 +80,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-compress');
-  grunt.registerTask('default', ['copy', 'less', 'concat', 'uglify']);
-  grunt.registerTask('release', ['default', 'compress']);
+  grunt.registerTask('default', ['copy', 'less', 'concat']);
+  grunt.registerTask('release', ['default', 'uglify', 'compress']);
 }
