@@ -10,7 +10,7 @@ To get you started, we made a damn small instruction.
    privilege to choose where to set his/her next cross/circle.
 5. The winner is the one who wins the TicTacToe on the big fields.
 
-To create a draw use:
+Protip: To create a draw use:
 ```
 OXX
 XOO

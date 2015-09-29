@@ -36,6 +36,7 @@ var server = http.createServer(function(request, response) {
   * HTTP GET
   */
   if (request.method == "GET") {
+    console.log("GET on " + request.url)
     var requestedId = null;
     request.pipe(concatStream(function(data) { //collect incoming datastream
       if (data != "") {
@@ -57,11 +58,11 @@ var server = http.createServer(function(request, response) {
     }));
   }
 
-
   /*
   * HTTP PUT
   */
   if (request.method == "PUT") {
+    console.log("PUT on " + request.url)
     request.pipe(concatStream(function (data) { //collect incoming datastream
       boardmanager.processMove(JSON.parse(data), sendProcessedBoardToClient);
     }));
@@ -71,6 +72,7 @@ var server = http.createServer(function(request, response) {
   * HTTP POST
   */
   if (request.method == "POST") {
+    console.log("POST on " + request.url)
     var game = boardmanager.createNewGame();
     sendObject(game);
   }
@@ -86,4 +88,5 @@ module.exports = {
   port:port
 };
 
+console.log("starting hypertoc-api on port " + port);
 server.listen(port);
