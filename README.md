@@ -28,7 +28,7 @@ OXX
   * npm install unit.js
   * npm install -g mocha
 
-Creating an automated installation script (eg NPM) is still a TODO for @shrykull.
+There is a relatively automated docker installation script for development availible via /docker/start-testserver.sh which requires docker (guess what!).
 
 ## Web Frontend
 ### Requirements
