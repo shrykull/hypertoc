@@ -23,6 +23,7 @@ hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'Dra
     //TODO: add InputEventService.events.mouseIn and mouseOut
 
     //TODO: draw stuff on secondary display
+    DrawService.initializeSecondaryDisplay();
 
   });
 

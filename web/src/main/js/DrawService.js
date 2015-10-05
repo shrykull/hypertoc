@@ -20,7 +20,6 @@ hypertoc.factory('DrawService', function() {
     right: width * marginPercentage
   };
 
-
   var subfieldwidth  = (width  - (margin.left*4 + margin.right*4)) / 3,
       subfieldheight = (height - (margin.top*4  + margin.bottom*4)) / 3;
 
@@ -201,6 +200,37 @@ hypertoc.factory('DrawService', function() {
       drawBoardDecorations(); //draws outer border
       initializeDynamicBoardElements(); //draws ALL X and O for later visibility
       drawBoardShapes(); //draws ten hashtags
+    },
+    initializeSecondaryDisplay: function() {
+      var group = secondaryDisplay.append("g");
+      group
+        .append("rect")
+          .attr("width", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height"); })
+          .attr("height", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height"); })
+          .attr("fill", "green");
+
+      var margin = 3; //TODO: auslagern
+      group
+        .append("rect")
+          .attr("x", margin)
+          .attr("y", margin)
+          .attr("width", function() {
+            return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height") - margin*2;
+          })
+          .attr("height", function() {
+            return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height") - margin*2;
+          })
+          .attr("stroke-width", 2)
+          .attr("stroke", "black")
+          .attr("fill", "none");
+      group
+        .append("text")
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "middle")
+          .attr("x", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height") / 2; })
+          .attr("y", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height") / 2; })
+          .text("-Start-");
+      group.on("click", function() {console.log("click on secondary display button")})
     },
     drawBoardSymbols: function(board) {
         //draw symbols into subfields 0-8
