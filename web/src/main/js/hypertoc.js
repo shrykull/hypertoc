@@ -22,6 +22,7 @@ hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'Dra
       if (UIStateService.getGameState().stateName === "waitingForPlayerTurn") {
         //TODO: elaborate this to actually do something
         console.log("sf/sym " + sf+"/"+sym);
+        GameDataService.submitMove(sf, sym);
       }
     }
     //TODO: add InputEventService.events.mouseIn and mouseOut
@@ -130,6 +131,13 @@ hypertoc.factory('GameDataService',  ['$http', 'ConfigService', function($http, 
     },
     addBoardRefreshHook: function(callback) {
       refreshHooks.push(callback);
+    },
+    submitMove: function(sf, sym) {
+      gameData.board.field[sf][sym] = "O";
+      $http.put(ConfigService.getEndpoint() + gameData.gameId, gameData).then(function(response) {
+        gameData = response.data;
+        refreshHooks.forEach(function(f) { f(); }); //tell everybody we got a new board
+      });
     }
   };
 }]);
