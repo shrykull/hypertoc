@@ -9,7 +9,8 @@ hypertoc.controller('mainContentCtrl', ['$scope', 'BoardUIService', function($sc
 
 }]);
 
-hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'DrawService', function(GameDataService, InputEventService, DrawService) {
+
+hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'DrawService', 'UIStateService', function(GameDataService, InputEventService, DrawService, UIStateService) {
   var drawFunction = function() {
     DrawService.drawBoardSymbols(GameDataService.getBoard()); //applies visibility rules for all x and o according to board
   };
@@ -22,9 +23,15 @@ hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'Dra
     }
     //TODO: add InputEventService.events.mouseIn and mouseOut
 
-    //TODO: draw stuff on secondary display
+    //draw stuff on secondary display
     DrawService.initializeSecondaryDisplay();
 
+    //TODO: auslagern in InputEventService?
+    var group = d3.select('[data-id=startButton]');
+    group.on("click", function() {
+      console.log("startbutton clicked, Gamestate: " + UIStateService.getGameState().stateName);
+      UIStateService.setGameState("waitingForPlayerTurn");
+     })
   });
 
   GameDataService.addBoardRefreshHook(drawFunction);

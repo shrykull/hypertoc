@@ -176,7 +176,8 @@ hypertoc.factory('DrawService', function() {
         .attr("x2", width - margin.right / 2)
         .attr("y2", height - margin.bottom / 2);
     };
-  var drawBoardShapes = function() {
+
+   function drawBoardShapes() {
     var boardShape = gameView.append("g")
       .attr("class", "gameViewBoardShapes");
     //draw "big" boardShape
@@ -195,6 +196,7 @@ hypertoc.factory('DrawService', function() {
       }
     }
   };
+
   return {
     initializeBoard: function() {
       drawBoardDecorations(); //draws outer border
@@ -203,6 +205,7 @@ hypertoc.factory('DrawService', function() {
     },
     initializeSecondaryDisplay: function() {
       var group = secondaryDisplay.append("g");
+      group.attr("data-id", "startButton");
       group
         .append("rect")
           .attr("width", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height"); })
@@ -230,7 +233,6 @@ hypertoc.factory('DrawService', function() {
           .attr("x", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height") / 2; })
           .attr("y", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height") / 2; })
           .text("-Start-");
-      group.on("click", function() {console.log("click on secondary display button")})
     },
     drawBoardSymbols: function(board) {
         //draw symbols into subfields 0-8
