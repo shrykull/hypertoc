@@ -18,19 +18,64 @@ hypertoc.factory('BoardUIService', ['GameDataService', 'InputEventService', 'Dra
   angular.element(document).ready(function() {
     DrawService.initializeBoard();
     InputEventService.addMouseEventHooks();
-    InputEventService.events.click = function(sf, sym) { //TODO: elaborate this to actually do something
-      console.log("sf/sym " + sf+"/"+sym);
+    InputEventService.events.click = function(sf, sym) {
+      if (UIStateService.getGameState().stateName === "waitingForPlayerTurn") {
+        //TODO: elaborate this to actually do something
+        console.log("sf/sym " + sf+"/"+sym);
+      }
     }
     //TODO: add InputEventService.events.mouseIn and mouseOut
 
     //draw stuff on secondary display
     DrawService.initializeSecondaryDisplay();
+    //registers secondary display behaviour on statechange
+    UIStateService.registerStateChangeHandler(function(from, to) {
+      var setButtonText = d3.select('[data-id=secondaryButton]').select("text");
+      switch(from) {
+        case ("waitingForStart"):
+          setButtonText.text("-run-");
+          break;
+      }
+      switch(to) {
+        case("waitingForPlayerTurn"):
+          setButtonText.text("-your turn-");
+          break;
+        case("waitingForEnemyTurn"):
+          setButtonText.text("-waiting-");
+          break;
+        case("waitingForStart"):
+          setButtonText.text("-Start-");
+          break;
+        case("showResults"):
+          setButtonText.text("-game ended-");
+          break;
+      }
+    });
 
-    //TODO: auslagern in InputEventService?
-    var group = d3.select('[data-id=startButton]');
+    //registers board behaviour on statechange
+    UIStateService.registerStateChangeHandler(function(from, to) {
+      switch(from) {
+        case("waitingForStart"):
+          //TODO: get new game from GameDataService
+          GameDataService.startNewGame();
+      }
+    });
+
+    //TODO: auslagern in InputEventService oder so?
+    var group = d3.select('[data-id=secondaryButton]');
     group.on("click", function() {
       console.log("startbutton clicked, Gamestate: " + UIStateService.getGameState().stateName);
-      UIStateService.setGameState("waitingForPlayerTurn");
+      switch (UIStateService.getGameState().stateName) {
+        case("waitingForStart"):
+          UIStateService.setGameState("waitingForPlayerTurn");
+          break;
+        case("waitingForPlayerTurn"):
+          UIStateService.setGameState("waitingForEnemyTurn");
+          break;
+        case("waitingForEnemyTurn"):
+          UIStateService.setGameState("waitingForPlayerTurn");
+          break;
+      }
      })
   });
 
@@ -72,13 +117,16 @@ hypertoc.factory('GameDataService',  ['$http', 'ConfigService', function($http, 
 
   var refreshHooks = [];
 
-  $http.get(ConfigService.getEndpoint()).then(function(response) {
-    gameData = response.data;
-    refreshHooks.forEach(function(f) { f(); }); //tell everybody we got a new board
-  });
+
   return {
     getBoard: function() {
       return gameData.board;
+    },
+    startNewGame: function() {
+      $http.post(ConfigService.getEndpoint()).then(function(response) {
+        gameData = response.data;
+        refreshHooks.forEach(function(f) { f(); }); //tell everybody we got a new board
+      });
     },
     addBoardRefreshHook: function(callback) {
       refreshHooks.push(callback);

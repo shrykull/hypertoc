@@ -34,9 +34,9 @@ hypertoc.factory('UIStateService', [function() {
       return gameStates[currentGameState].followers.indexOf(stateName) >= 0;
     }
     if (isValid(newStateString)) {
+      handlers.forEach(function(handler) { handler(getGameState().stateName, newStateString) })
       currentGameState = gameStateIndexOf(newStateString);
       console.log("cgs: " + currentGameState);
-      handlers.forEach(function(handler) { handler(getGameState().stateName) })
     } else {
       //TODO: this should not happen. at all.
       alert("invalid gamestate\n" + getGameState().stateName + "->" + newStateString + "\n\nPlease file a bug report.");
@@ -46,8 +46,8 @@ hypertoc.factory('UIStateService', [function() {
   return {
     getGameState: getGameState,
     setGameState: setNextState,
-    registerStateChangeHandler: function(callbackHandler) {
-      handler.push(callbackHandler);
+    registerStateChangeHandler: function(callbackHandler) { //callback head: function(oldState, newState)
+      handlers.push(callbackHandler);
     },
   }
 }]);

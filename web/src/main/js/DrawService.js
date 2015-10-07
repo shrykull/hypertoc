@@ -205,7 +205,7 @@ hypertoc.factory('DrawService', function() {
     },
     initializeSecondaryDisplay: function() {
       var group = secondaryDisplay.append("g");
-      group.attr("data-id", "startButton");
+      group.attr("data-id", "secondaryButton");
       group
         .append("rect")
           .attr("width", function() { return document.querySelector('[data-id=secondaryDisplay]').firstChild.getAttribute("height"); })
