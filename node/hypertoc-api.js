@@ -64,7 +64,18 @@ var server = http.createServer(function(request, response) {
   if (request.method == "PUT") {
     console.log("PUT on " + request.url)
     request.pipe(concatStream(function (data) { //collect incoming datastream
-      boardmanager.processMove(JSON.parse(data), sendProcessedBoardToClient);
+      console.log("Got board: " + data)
+      var board = JSON.parse(data);
+      if (
+          (board) &&
+          (board.move) &&
+          (board.gameId) &&
+          (board.currentMoveId) &&
+          (board.playerIds)
+        ) //TODO: elaborate input sanitization
+        boardmanager.processMove(board, sendProcessedBoardToClient);
+      else //the PUT data failed our sanity check, HTTP 422: Unprocessable Entity
+        sendObject(null, 422);
     }));
   }
 
