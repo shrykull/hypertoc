@@ -36,7 +36,6 @@ hypertoc.factory('UIStateService', [function() {
     if (isValid(newStateString)) {
       handlers.forEach(function(handler) { handler(getGameState().stateName, newStateString) })
       currentGameState = gameStateIndexOf(newStateString);
-      console.log("cgs: " + currentGameState);
     } else {
       //TODO: this should not happen. at all.
       alert("invalid gamestate\n" + getGameState().stateName + "->" + newStateString + "\n\nPlease file a bug report.");

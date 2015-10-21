@@ -28,7 +28,8 @@ module.exports = {
           [" "," "," "," "," "," "," "," "," "],
           [" "," "," "," "," "," "," "," "," "],
         ],
-        lastMove:null,
+        lastMove:null, //move looks like this, if set: {field:1, subfield: 3, symbol:"X"}
+        validSubfields:[]
       }
     };
     games[game.gameId] = JSON.parse(JSON.stringify(game)); //copy game to our game storage
@@ -45,12 +46,12 @@ module.exports = {
       }
       oldGamestate = foundGame;
       if (oldGamestate) {
-        rules.doMove(oldGamestate.board, newGamestate.move, function(error, appliedBoard) {
+        rules.doMove(oldGamestate.board, newGamestate.board.move, function(error, appliedBoard) {
           if (error) {
             callback(error, oldGamestate);
             return;
           }
-          newGamestate.board = appliedBoard; 
+          newGamestate.board = appliedBoard;
           newGamestate.currentMoveId = generateId(); //moveID has to change on a successful move
           games[newGamestate.gameId] = newGamestate;
           callback(null, newGamestate);
@@ -73,7 +74,7 @@ module.exports = {
       var randomIndex = keys[Math.floor(Math.random() * keys.length)];
       var randomGame = JSON.parse(JSON.stringify(games[randomIndex])); //copy a game from our game collection
       randomGame.currentMoveId = null; //remove move ID so random watchers can't interfere
-      callback(null, randomGame); 
+      callback(null, randomGame);
     } else {
       callback(404);
     }

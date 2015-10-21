@@ -113,6 +113,7 @@ hypertoc.factory('GameDataService',  ['$http', 'ConfigService', function($http, 
         [" "," "," "," "," "," "," "," "," "],
       ],
       lastMove:{subfield: 5, field: 5, symbol:"X"}, //stub: O started, X moved to dead center, O's turn now.
+      validSubfields:[],
     }
   };
 
@@ -132,8 +133,12 @@ hypertoc.factory('GameDataService',  ['$http', 'ConfigService', function($http, 
     addBoardRefreshHook: function(callback) {
       refreshHooks.push(callback);
     },
-    submitMove: function(sf, sym) {
-      gameData.board.field[sf][sym] = "O";
+    submitMove: function(sf, f) {
+      gameData.board.move = {
+        subfield:sf,
+        field:f,
+        symbol:"O"
+      };
       $http.put(ConfigService.getEndpoint() + gameData.gameId, gameData).then(function(response) {
         gameData = response.data;
         refreshHooks.forEach(function(f) { f(); }); //tell everybody we got a new board
